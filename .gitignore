@@ -1,0 +1,17 @@
+# R / RStudio
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Scratch outputs (keep final outputs tracked)
+results/scratch/
+figures/scratch/
+
+# renv (do not commit local library)
+renv/library/
+renv/python/
+renv/staging/
+
+# OS
+.DS_Store
