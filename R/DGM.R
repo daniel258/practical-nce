@@ -26,13 +26,14 @@ CalcResidSD <- function(a1, a2, c1, c2) {
 }
 
 # Sample mean-zero, and given variance level noise with optional heavy tails
-#' dist: "norm" or "t"
 rnoise <- function(n_sample, dist = c("norm", "t"), df = 5, sigma) {
   dist <- match.arg(dist)
   if (dist == "norm") 
   noise <- rnorm(n_sample, mean = 0, sd = sigma)
   else
-  {noise_temp <- rt(n_sample, df = df)
+  {
+  if (dist == "t" && df <= 2) stop("For t noise, df must be > 2.")
+  noise_temp <- rt(n_sample, df = df)
   noise <- sigma * noise_temp / sqrt(df / (df - 2))}
   return(noise)
 }
