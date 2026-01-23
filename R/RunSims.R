@@ -96,6 +96,7 @@ RunSims <- function(grid,
   agg$bias_A_fit2 <- agg$beta_A_fit2 - agg$b2
   
   if (!is.null(save_prefix)) {
+    dir.create(dirname(save_prefix), showWarnings = FALSE, recursive = TRUE)
     saveRDS(list(raw = raw, agg = agg),
             file = paste0(save_prefix, "_sims.rds"))
     write.csv(agg, file = paste0(save_prefix, "_agg.csv"), row.names = FALSE)
@@ -105,29 +106,29 @@ RunSims <- function(grid,
 }
 
 # ---- minimal example ----
-
-all_a1 <- c(0.2, 0.4, 0.6) 
-all_b1 <- c(0.2, 0.4)
-all_c1 <- c(0.2, 0.4, 0.6)
-all_b2 <- 0.3
-all_a0 <- 0 ;all_b0 <- 0;all_c0 <- 0
-all_a2 <- 0;all_c2 <- 0 
-all_sigma_eY <- 1
-grid0 <- expand.grid(a0 = all_a0, b0 = all_b0, c0 = all_c0,
-                    a1 = all_a1, c1 = all_c1, b1 = all_b1,
-                    a2 = all_a2, b2 = all_b2, c2 = all_c2,
-                    sigma_eY = all_sigma_eY, stringsAsFactors = FALSE)
-
-
 # 
-res0 <- RunSims(
-  grid = grid0,
-  n_sample = 1000,
-  n_iters = 200,
-  robust_se = FALSE,
-  noise_dist = "norm",
-  seed = 314,
-  save_prefix = "../results/noV_example"
-)
+# all_a1 <- c(0.2, 0.4, 0.6) 
+# all_b1 <- c(0.2, 0.4)
+# all_c1 <- c(0.2, 0.4, 0.6)
+# all_b2 <- 0.3
+# all_a0 <- 0 ;all_b0 <- 0;all_c0 <- 0
+# all_a2 <- 0;all_c2 <- 0 
+# all_sigma_eY <- 1
+# grid0 <- expand.grid(a0 = all_a0, b0 = all_b0, c0 = all_c0,
+#                     a1 = all_a1, c1 = all_c1, b1 = all_b1,
+#                     a2 = all_a2, b2 = all_b2, c2 = all_c2,
+#                     sigma_eY = all_sigma_eY, stringsAsFactors = FALSE)
+# 
+# 
+# # 
+# res0 <- RunSims(
+#   grid = grid0,
+#   n_sample = 1000,
+#   n_iters = 200,
+#   robust_se = FALSE,
+#   noise_dist = "norm",
+#   seed = 314,
+#   save_prefix = "../results/noV_example"
+# )
 # 
 # head(res0$agg)
