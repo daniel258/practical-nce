@@ -153,14 +153,14 @@ RunSims <- function(grid,
   list(raw = raw, agg = agg)
 }
 
-# ---- minimal example ----
+#---- minimal example ----
 # 
-# all_a1 <- c(0.2, 0.4, 0.6) 
+# all_a1 <- c(0.2, 0.4, 0.6)
 # all_b1 <- c(0.2, 0.4)
 # all_c1 <- c(0.2, 0.4, 0.6)
 # all_b2 <- 0.3
 # all_a0 <- 0 ;all_b0 <- 0;all_c0 <- 0
-# all_a2 <- 0;all_c2 <- 0 
+# all_a2 <- 0;all_c2 <- 0
 # all_sigma_eY <- 1
 # grid0 <- expand.grid(a0 = all_a0, b0 = all_b0, c0 = all_c0,
 #                     a1 = all_a1, c1 = all_c1, b1 = all_b1,
@@ -168,7 +168,7 @@ RunSims <- function(grid,
 #                     sigma_eY = all_sigma_eY, stringsAsFactors = FALSE)
 # 
 # 
-# # 
+# #
 # res0 <- RunSims(
 #   grid = grid0,
 #   n_sample = 1000,
@@ -179,4 +179,4 @@ RunSims <- function(grid,
 #   save_prefix = "../results/noV_example"
 # )
 # 
-# head(res0$agg)
+# head(res0$agg) 
