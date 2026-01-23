@@ -67,8 +67,8 @@ DGM <- function(n_sample, pars, noise_dist  = c("norm", "t"), df = 5) {
 
 # ---- quick tests ----
 pars0 <- list(a0=0, a1=0.5, a2=0, b0=0, b1=0.3, b2=0.4, c0=0, c1=0.6, c2=0, sigma_eY=1)
-df0 <-DGM(n_sample=1e6, pars=pars0, noise_dist="norm")
-summary(lm(formula = Y ~ A + U + V + Atilde, data = df0))
-var(df0$A)      
-var(df0$Atilde)
+dat0 <-DGM(n_sample=1e6, pars=pars0, noise_dist="norm")
+ff <- (lm(formula = Y ~ A + U + V + Atilde, data = dat0))
+var(dat0$A)      
+var(dat0$Atilde)
 

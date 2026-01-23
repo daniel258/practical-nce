@@ -4,7 +4,7 @@
 # - Fit 2: Y ~ A + Atilde
 # Robust SEs use sandwich::vcovHC (HC1).
 
-FitModels <- function(df, alpha = 0.05, intercept = TRUE, robust_se = FALSE) {
+FitModels <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FALSE) {
   
   if (intercept) {
     f1 <- Y ~ A
@@ -14,8 +14,8 @@ FitModels <- function(df, alpha = 0.05, intercept = TRUE, robust_se = FALSE) {
     f2 <- Y ~ A + Atilde - 1
   }
   
-  fit1 <- lm(f1, data = df)
-  fit2 <- lm(f2, data = df)
+  fit1 <- lm(f1, data = dat)
+  fit2 <- lm(f2, data = dat)
   
   # point estimates
   beta_A_fit1      <- unname(coef(fit1)["A"])
