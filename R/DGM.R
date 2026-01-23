@@ -9,16 +9,18 @@
 #
 # Var(eA) and Var(eAt) are chosen so that Var(A)=Var(Atilde)=1.
 # For first DGM a2 = c2 = 0
-# This is achieved by setting Var(eA) = 1 - a1^2 - a2^2 and Var(eAt) = 1 - c1^2 + c2^2).
+# This is achieved by setting Var(eA) = 1 - a1^2 - a2^2 and Var(eAt) = 1 - c1^2 - c2^2.
 
+## The main function is DGM() below. The rest of the functions are internal helpers.
 # Compute residual SD to enforce Var(linear combo + residual)=1
 CalcResidSD <- function(a1, a2, c1, c2) {
   v_eA  <- 1 - (a1^2 + a2^2)
   v_eAt <- 1 - (c1^2 + c2^2)
   if (v_eA <= 0 | v_eAt <= 0 ) {
     stop(sprintf(
-      "Cannot normalize to unit variance: required residual variance %.6f <= 0)",
-      v_eA, v_eAt), call. = FALSE)
+      "Residual variances must be positive. Computed Var(eA)=%.6f and Var(eAt)=%.6f.",
+      v_eA, v_eAt
+    ))
   }
   c(sqrt(v_eA), sqrt(v_eAt))
 }
