@@ -94,7 +94,21 @@ RunSims <- function(grid,
   # Bias summaries for beta_A (relative to structural b2 in your DGM)
   agg$bias_A_fit1 <- agg$beta_A_fit1 - agg$b2
   agg$bias_A_fit2 <- agg$beta_A_fit2 - agg$b2
-  
+  # add summaries of DGM and analyses
+  raw$source   <- "sim"
+  agg$source   <- "sim"
+  raw$se_type  <- if (robust_se) "HC1" else "classical"
+  agg$se_type  <- if (robust_se) "HC1" else "classical"
+  raw$noise_dist <- noise_dist
+  agg$noise_dist <- noise_dist
+  raw$df_t <- if (noise_dist == "t") df_t else NA_real_
+  agg$df_t <- if (noise_dist == "t") df_t else NA_real_
+  raw$n_sample <- n_sample
+  agg$n_sample <- n_sample
+  raw$n_iters <- n_iters
+  agg$n_iters <- n_iters
+  raw$seed <- if (is.null(seed)) NA_real_ else seed
+  agg$seed <- if (is.null(seed)) NA_real_ else seed
   if (!is.null(save_prefix)) {
     dir.create(dirname(save_prefix), showWarnings = FALSE, recursive = TRUE)
     saveRDS(list(raw = raw, agg = agg),
