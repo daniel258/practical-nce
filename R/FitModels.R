@@ -65,16 +65,16 @@ FitModels <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FALSE) {
     beta_A_fit1       = beta_A_fit1,
     se_A_fit1         = se_A_fit1,
     p_A_fit1          = p_A_fit1,
-    power_A_fit1      = (p_A_fit1 < alpha),
+    power_A_fit1      = as.numeric(p_A_fit1 < alpha),
     
     beta_A_fit2       = beta_A_fit2,
     se_A_fit2         = se_A_fit2,
     p_A_fit2          = p_A_fit2,
-    power_A_fit2      = (p_A_fit2 < alpha),
+    power_A_fit2      = as.numeric(p_A_fit2 < alpha),
     
     beta_Atilde_fit2  = beta_Atilde_fit2,
     se_Atilde_fit2    = se_Atilde_fit2,
     p_Atilde_fit2     = p_Atilde_fit2,
-    power_Atilde_fit2 = (p_Atilde_fit2 < alpha)
+    power_Atilde_fit2 = as.numeric(p_Atilde_fit2 < alpha)
   )
 }
