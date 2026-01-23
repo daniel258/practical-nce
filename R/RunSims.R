@@ -48,10 +48,23 @@ RunSims <- function(grid,
   n_out  <- n_grid * n_iters
   # columns to extract from FitModels output
   fit_cols <- c(
+    # fit1: Y ~ A
     "beta_A_fit1","se_A_fit1","p_A_fit1","power_A_fit1",
+    
+    # fit2: Y ~ A + Atilde
     "beta_A_fit2","se_A_fit2","p_A_fit2","power_A_fit2",
-    "beta_Atilde_fit2","se_Atilde_fit2","p_Atilde_fit2","power_Atilde_fit2"
+    "beta_Atilde_fit2","se_Atilde_fit2","p_Atilde_fit2","power_Atilde_fit2",
+    
+    # fit3: Y ~ A + V
+    "beta_A_fit3","se_A_fit3","p_A_fit3","power_A_fit3",
+    "beta_V_fit3","se_V_fit3","p_V_fit3","power_V_fit3",
+    
+    # fit4: Y ~ A + Atilde + V
+    "beta_A_fit4","se_A_fit4","p_A_fit4","power_A_fit4",
+    "beta_Atilde_fit4","se_Atilde_fit4","p_Atilde_fit4","power_Atilde_fit4",
+    "beta_V_fit4","se_V_fit4","p_V_fit4","power_V_fit4"
   )
+  
   # make space for results
   raw <- data.frame(matrix(NA_real_, nrow = n_out,
                            ncol = ncol(grid) + 1 + length(fit_cols)))
@@ -72,10 +85,23 @@ RunSims <- function(grid,
     }
   }
   
-  mean_cols <- c("beta_A_fit1","se_A_fit1","power_A_fit1",
-                 "beta_A_fit2","se_A_fit2","power_A_fit2",
-                 "beta_Atilde_fit2","se_Atilde_fit2","power_Atilde_fit2")
-  sd_cols <- c("beta_A_fit1","beta_A_fit2","beta_Atilde_fit2")
+  mean_cols <- c(
+    "beta_A_fit1","se_A_fit1","power_A_fit1",
+    "beta_A_fit2","se_A_fit2","power_A_fit2",
+    "beta_Atilde_fit2","se_Atilde_fit2","power_Atilde_fit2",
+    
+    "beta_A_fit3","se_A_fit3","power_A_fit3",
+    "beta_V_fit3","se_V_fit3","power_V_fit3",
+    
+    "beta_A_fit4","se_A_fit4","power_A_fit4",
+    "beta_Atilde_fit4","se_Atilde_fit4","power_Atilde_fit4",
+    "beta_V_fit4","se_V_fit4","power_V_fit4"
+  )
+  
+  sd_cols <- c("beta_A_fit1","beta_A_fit2","beta_Atilde_fit2",
+               "beta_A_fit3","beta_V_fit3",
+               "beta_A_fit4","beta_Atilde_fit4","beta_V_fit4")
+  
   agg_mean <- aggregate(raw[, mean_cols, drop = FALSE],
                         by = raw[, needed, drop = FALSE],
                         FUN = mean)
@@ -87,13 +113,21 @@ RunSims <- function(grid,
   names(agg_sd)[names(agg_sd) == "beta_A_fit1"]      <- "sd_beta_A_fit1"
   names(agg_sd)[names(agg_sd) == "beta_A_fit2"]      <- "sd_beta_A_fit2"
   names(agg_sd)[names(agg_sd) == "beta_Atilde_fit2"] <- "sd_beta_Atilde_fit2"
+  names(agg_sd)[names(agg_sd) == "beta_A_fit3"]      <- "sd_beta_A_fit3"
+  names(agg_sd)[names(agg_sd) == "beta_V_fit3"]      <- "sd_beta_V_fit3"
+  names(agg_sd)[names(agg_sd) == "beta_A_fit4"]      <- "sd_beta_A_fit4"
+  names(agg_sd)[names(agg_sd) == "beta_Atilde_fit4"] <- "sd_beta_Atilde_fit4"
+  names(agg_sd)[names(agg_sd) == "beta_V_fit4"]      <- "sd_beta_V_fit4"
   
   agg <- merge(agg_mean, agg_sd, by = needed, all.x = TRUE)
   
   
-  # Bias summaries for beta_A (relative to structural b2 in your DGM)
+  # Bias summaries for beta_A estimates
   agg$bias_A_fit1 <- agg$beta_A_fit1 - agg$b2
   agg$bias_A_fit2 <- agg$beta_A_fit2 - agg$b2
+  agg$bias_A_fit3 <- agg$beta_A_fit3 - agg$b2
+  agg$bias_A_fit4 <- agg$beta_A_fit4 - agg$b2
+  
   # add summaries of DGM and analyses
   raw$source   <- "sim"
   agg$source   <- "sim"
