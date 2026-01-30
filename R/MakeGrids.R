@@ -26,7 +26,10 @@ AddDerivedCols <- function(grid) {
   grid$rho_U     <- with(grid, a1 * c1)
   grid$rho_V     <- with(grid, a2 * c2)
   grid$rho_total <- with(grid, rho_U + rho_V)
-  grid$rho_rel_U     <- with(grid, rho_U/rho_total)
+  # Avoid division by zero
+  grid$rho_rel_U <- NA_real_
+  ok <- abs(grid$rho_total) > 1e-12
+  grid$rho_rel_U[ok] <- grid$rho_U[ok] / grid$rho_total[ok]
   grid$bias     <- with(grid, b1 * a1)  # bias in the Y ~ A model
   grid
 }
@@ -58,15 +61,15 @@ MakeGrid_NoV <- function(a1, c1, b1, b2,
 }
 
 # ---- Design 1 ----
-# Fix total correlation rho and fix confounding strength kappa = b1*a1.
+# Fix total correlation rho and fix confounding strength bias = b1*a1.
 # Default "symmetric" choice: c1=a1 and c2=a2 (you can change that later if needed).
 #
 # With c1=a1 and c2=a2:
 #   rho = a1^2 + a2^2  =>  a2 = sqrt(rho - a1^2)
 # Constraints require: 0 < rho < 1 and a1^2 < rho.
-MakeGrid_D1_FixRhoFixKappa <- function(a1_vec,
+MakeGrid_D1_FixRhoFixBias <- function(a1_vec,
                                        rho,
-                                       kappa,
+                                       bias,
                                        b2,
                                        a0 = 0, b0 = 0, c0 = 0,
                                        sigma_eY = 1,
@@ -74,7 +77,7 @@ MakeGrid_D1_FixRhoFixKappa <- function(a1_vec,
   if (rho <= 0 || rho >= 1) stop("rho must be in (0,1).")
   
   a1 <- a1_vec
-  if (any(a1 <= 0)) stop("a1_vec must be > 0 (needed for b1 = kappa/a1).")
+  if (any(a1 <= 0)) stop("a1_vec must be > 0 (needed for b1 = bias/a1).")
   if (any(a1^2 >= rho)) stop("Need a1^2 < rho for a2 = sqrt(rho - a1^2) to be real/positive.")
   
   a2 <- sqrt(rho - a1^2)
@@ -83,8 +86,8 @@ MakeGrid_D1_FixRhoFixKappa <- function(a1_vec,
   c1 <- a1
   c2 <- a2
   
-  # Fix confounding strength: kappa = b1*a1 -> b1 = kappa/a1
-  b1 <- kappa / a1
+  # Fix confounding strength: bias = b1*a1 -> b1 = bias/a1
+  b1 <- bias / a1
   
   grid <- data.frame(
     a1 = a1,
@@ -100,13 +103,13 @@ MakeGrid_D1_FixRhoFixKappa <- function(a1_vec,
 }
 
 # ---- Design 2 ----
-# Fix confounding strength kappa (via b1 = kappa/a1) and vary rho_total.
+# Fix confounding strength bias (via b1 = bias/a1) and vary rho_total.
 
 # D2: fix (a1,c1) and vary (a2,c2) symmetrically to change rho.
 # With c1=a1 and c2=a2, rho = a1^2 + a2^2, so varying a2 varies rho.
-MakeGrid_D2_FixKappaVaryRho_ByA2 <- function(a1,
+MakeGrid_D2_FixBiasVaryRho_ByA2 <- function(a1,
                                              a2_vec,
-                                             kappa,
+                                             bias,
                                              b2,
                                              a0 = 0, b0 = 0, c0 = 0,
                                              sigma_eY = 1,
@@ -119,7 +122,7 @@ MakeGrid_D2_FixKappaVaryRho_ByA2 <- function(a1,
   c1 <- rep(a1, length(a2))
   c2 <- a2
   
-  b1 <- rep(kappa / a1, length(a2))
+  b1 <- rep(bias / a1, length(a2))
   
   grid <- data.frame(
     a1 = rep(a1, length(a2)),
@@ -136,9 +139,9 @@ MakeGrid_D2_FixKappaVaryRho_ByA2 <- function(a1,
 
 # D3: fix (a2,c2) and vary (a1,c1) symmetrically to change rho.
 # With c1=a1 and c2=a2 fixed: rho = a1^2 + a2^2.
-MakeGrid_D3_FixKappaVaryRho_ByA1 <- function(a1_vec,
+MakeGrid_D3_FixBiasVaryRho_ByA1 <- function(a1_vec,
                                              a2,
-                                             kappa,
+                                             bias,
                                              b2,
                                              a0 = 0, b0 = 0, c0 = 0,
                                              sigma_eY = 1,
@@ -151,7 +154,7 @@ MakeGrid_D3_FixKappaVaryRho_ByA1 <- function(a1_vec,
   c1 <- a1
   c2 <- rep(a2, length(a1))
   
-  b1 <- kappa / a1
+  b1 <- bias / a1
   
   grid <- data.frame(
     a1 = a1,
