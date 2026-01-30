@@ -1,8 +1,6 @@
 # RunSims.R
 # Run simulation replications over a grid of structural parameters.
 # Requires DGM.R and FitModels.R to be sourced
-source("DGM.R")
-source("FitModels.R")
 
 # Simple grid builder for the "no V" case (set a2=c2=0).
 MakeGrid_NoV <- function(a1, c1, b1, b2, sigma_eY = 1) {
@@ -155,6 +153,8 @@ RunSims <- function(grid,
 
 #---- minimal example ----
 # 
+# source("DGM.R")
+# source("FitModels.R")
 # all_a1 <- c(0.2, 0.4, 0.6)
 # all_b1 <- c(0.2, 0.4)
 # all_c1 <- c(0.2, 0.4, 0.6)
