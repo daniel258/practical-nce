@@ -1,0 +1,46 @@
+List of 14
+ $ created_at  : chr "2026-02-06 12:07:31.928009"
+ $ script      : chr "Run_NoV_Sims.R"
+ $ save_prefix : chr "results/noV/noV_norm_n1000_it1000_seed314_20260206_114532"
+ $ n_sample    : num 1000
+ $ n_iters     : num 1000
+ $ seed        : num 314
+ $ noise_dist  : chr "norm"
+ $ df_t        : num 5
+ $ alpha       : num 0.05
+ $ robust_se   : logi FALSE
+ $ grid_dim    : int [1:2] 95 15
+ $ grid_preview:'data.frame':	10 obs. of  15 variables:
+  ..$ a1       : num [1:10] 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5
+  ..$ c1       : num [1:10] 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1
+  ..$ b1       : num [1:10] 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5
+  ..$ b2       : num [1:10] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+  ..$ a2       : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ c2       : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ a0       : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ b0       : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ c0       : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ sigma_eY : num [1:10] 1 1 1 1 1 1 1 1 1 1
+  ..$ rho_U    : num [1:10] 0.005 0.01 0.015 0.02 0.025 0.03 0.035 0.04 0.045 0.05
+  ..$ rho_V    : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ rho_total: num [1:10] 0.005 0.01 0.015 0.02 0.025 0.03 0.035 0.04 0.045 0.05
+  ..$ rho_rel_U: num [1:10] 1 1 1 1 1 1 1 1 1 1
+  ..$ bias     : num [1:10] 0.025 0.05 0.075 0.1 0.125 0.15 0.175 0.2 0.225 0.25
+  ..- attr(*, "out.attrs")=List of 2
+ $ session_info:List of 14
+  ..$ R.version  :List of 14
+  ..$ platform   : chr "aarch64-apple-darwin20"
+  ..$ locale     : chr "en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8"
+  ..$ tzone      : chr "America/New_York"
+  ..$ tzcode_type: chr "internal"
+  ..$ running    : chr "macOS Tahoe 26.0.1"
+  ..$ RNGkind    : chr [1:3] "Mersenne-Twister" "Inversion" "Rejection"
+  ..$ basePkgs   : chr [1:7] "stats" "graphics" "grDevices" "utils" ...
+  ..$ otherPkgs  :List of 1
+  ..$ loadedOnly :List of 24
+  ..$ matprod    : chr "default"
+  ..$ BLAS       : chr "/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib"
+  ..$ LAPACK     : chr "/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib"
+  ..$ LA_version : chr "3.12.1"
+  ..- attr(*, "class")= chr "sessionInfo"
+ $             : num 22
