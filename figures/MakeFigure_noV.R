@@ -38,25 +38,25 @@ GetLegendGrob <- function(p) {
 p_bias <- ggplot(agg, aes(x = a1, y = bias_A_fit1, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "Bias in Exposure Effect", x = NULL, y = "Bias", color = expression(c[1])) +
+  labs(title = "(A) Bias in Exposure Effect", x = NULL, y = "Bias", color = expression(c[1])) +
   BaseTheme(legend_pos = "bottom")
 
 p_coef <- ggplot(agg, aes(x = a1, y = beta_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "NCE coefficient", x = NULL, y = "Coefficient", color = expression(c[1])) +
+  labs(title = "(B) NCE Coefficient", x = NULL, y = "Coefficient", color = expression(c[1])) +
   BaseTheme()
 
 p_pow <- ggplot(agg, aes(x = a1, y = power_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "Power of NCE test", x = expression(a[1]), y = "Power", color = expression(c[1])) +
+  labs(title = "(C) Power of NCE Test", x = expression(a[1]), y = "Power", color = expression(c[1])) +
   BaseTheme()
 
 p_se <- ggplot(agg, aes(x = a1, y = se_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "SE of NCE coefficient", x = expression(a[1]), y = "SE", color = expression(c[1])) +
+  labs(title = "(D) SE of NCE Coefficient", x = expression(a[1]), y = "SE", color = expression(c[1])) +
   BaseTheme()
 
 legend_grob <- GetLegendGrob(p_bias)
