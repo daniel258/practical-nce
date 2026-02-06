@@ -2,15 +2,6 @@
 # Run simulation replications over a grid of structural parameters.
 # Requires DGM.R and FitModels.R to be sourced
 
-# Simple grid builder for the "no V" case (set a2=c2=0).
-MakeGrid_NoV <- function(a1, c1, b1, b2, sigma_eY = 1) {
-  grid <- expand.grid(a1 = a1, c1 = c1, b1 = b1, b2 = b2, stringsAsFactors = FALSE)
-  grid$a0 <- 0; grid$b0 <- 0; grid$c0 <- 0
-  grid$a2 <- 0; grid$c2 <- 0
-  grid$sigma_eY <- sigma_eY
-  grid
-}
-
 RowToPars <- function(row) {
   list(
     a0 = row$a0, a1 = row$a1, a2 = row$a2,
@@ -64,24 +55,29 @@ RunSims <- function(grid,
   )
   
   # make space for results
-  raw <- data.frame(matrix(NA_real_, nrow = n_out,
-                           ncol = ncol(grid) + 1 + length(fit_cols)))
-  names(raw) <- c(names(grid), "iter", fit_cols)
+  # --- make space for results (preserve grid column types) ---
+  raw <- grid[rep(seq_len(n_grid), each = n_iters), , drop = FALSE]
+  raw$iter <- rep(seq_len(n_iters), times = n_grid)
   
-  k <- 1 # row index for raw results
+  # pre-allocate fit outputs
+  raw[, fit_cols] <- NA_real_
+  
+  # optional: enforce column order
+  raw <- raw[, c(names(grid), "iter", fit_cols), drop = FALSE]
+  
+  k <- 1
   for (g in seq_len(n_grid)) {
     pars <- RowToPars(grid[g, ])
-    
     for (it in seq_len(n_iters)) {
       dat <- DGM(n_sample = n_sample, pars = pars, noise_dist = noise_dist, df = df_t)
       fit <- FitModels(dat, alpha = alpha, intercept = intercept, robust_se = robust_se)
       
-      raw[k, names(grid)] <- grid[g, ]
-      raw[k, "iter"] <- it
+      # only fill the fit columns; grid + iter already set
       raw[k, fit_cols] <- fit[1, fit_cols]
       k <- k + 1
     }
   }
+  
   
   mean_cols <- c(
     "beta_A_fit1","se_A_fit1","power_A_fit1",
@@ -100,13 +96,16 @@ RunSims <- function(grid,
                "beta_A_fit3","beta_V_fit3",
                "beta_A_fit4","beta_Atilde_fit4","beta_V_fit4")
   
+  id_cols <- names(grid)
+  
   agg_mean <- aggregate(raw[, mean_cols, drop = FALSE],
-                        by = raw[, needed, drop = FALSE],
+                        by = raw[, id_cols, drop = FALSE],
                         FUN = mean)
   
   agg_sd <- aggregate(raw[, sd_cols, drop = FALSE],
-                      by = raw[, needed, drop = FALSE],
+                      by = raw[, id_cols, drop = FALSE],
                       FUN = sd)
+  
   
   names(agg_sd)[names(agg_sd) == "beta_A_fit1"]      <- "sd_beta_A_fit1"
   names(agg_sd)[names(agg_sd) == "beta_A_fit2"]      <- "sd_beta_A_fit2"
@@ -117,7 +116,7 @@ RunSims <- function(grid,
   names(agg_sd)[names(agg_sd) == "beta_Atilde_fit4"] <- "sd_beta_Atilde_fit4"
   names(agg_sd)[names(agg_sd) == "beta_V_fit4"]      <- "sd_beta_V_fit4"
   
-  agg <- merge(agg_mean, agg_sd, by = needed, all.x = TRUE)
+  agg <- merge(agg_mean, agg_sd, by = id_cols, all.x = TRUE)
   
   
   # Bias summaries for beta_A estimates
