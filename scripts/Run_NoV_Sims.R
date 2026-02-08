@@ -80,7 +80,7 @@ manifest <- list(
   grid_dim = dim(grid),
   grid_preview = utils::head(grid, 10),
   session_info = utils::sessionInfo(),
-  runtime_minutes <- elapsed_sec / 60
+  runtime_minutes = elapsed_sec / 60
 )
 
 saveRDS(manifest, file = paste0(save_prefix, "_manifest.rds"))
