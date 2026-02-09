@@ -96,9 +96,6 @@ MakeGrid_D1_FixRhoFixBias <- function(c1_vec,
   # Solve for c2 to keep rho_total fixed while varying c1
   c2 <- (rho_total - a1 * c1) / a2
   
-  # Solve for c2 to keep rho_total fixed while varying c1
-  c2 <- (rho_total - a1 * c1) / a2
-  
   # Drop infeasible rows (so the slide-style grid has empty regions)
   tol <- 1e-12
   keep <- (c1^2 + c2^2) < (1 - tol)
