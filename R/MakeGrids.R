@@ -86,20 +86,34 @@ MakeGrid_D1_FixRhoFixBias <- function(c1_vec,
                                       sigma_eY = 1,
                                       add_derived = TRUE) {
   if (abs(rho_total) >= 1) stop("rho_total must satisfy |rho_total| < 1.")
-  if (a1 == 0) stop("a1 must be nonzero (needed for b1 = bias/a1).")
-  if (a2 == 0) stop("a2 must be nonzero (needed to vary rho decomposition).")
+  if (!is.finite(a1) || a1 == 0) stop("a1 must be finite and nonzero (needed for b1 = bias/a1).")
+  if (!is.finite(a2) || a2 == 0) stop("a2 must be finite and nonzero (needed to vary rho decomposition).")
   if (a1^2 + a2^2 >= 1) stop("Need a1^2 + a2^2 < 1.")
+  if (any(!is.finite(c1_vec))) stop("c1_vec must be finite.")
   
   c1 <- c1_vec
-  if (any(!is.finite(c1))) stop("c1_vec must be finite.")
   
   # Solve for c2 to keep rho_total fixed while varying c1
   c2 <- (rho_total - a1 * c1) / a2
   
+  # Solve for c2 to keep rho_total fixed while varying c1
+  c2 <- (rho_total - a1 * c1) / a2
+  
+  # Drop infeasible rows (so the slide-style grid has empty regions)
+  tol <- 1e-12
+  keep <- (c1^2 + c2^2) < (1 - tol)
+  if (!any(keep)) {
+    return(data.frame())  # nothing feasible for this (rho_total, bias)
+  }
+  
+  c1 <- c1[keep]
+  c2 <- c2[keep]
+  
+  
   # Fix confounding strength: bias = b1*a1 -> b1 = bias/a1
   b1 <- rep(bias / a1, length(c1))
   
-  # b2 can be scalar or same length as c1
+  # Allow b2 scalar or length(c1_vec)
   if (length(b2) == 1) {
     b2_use <- rep(b2, length(c1))
   } else if (length(b2) == length(c1)) {
@@ -121,6 +135,7 @@ MakeGrid_D1_FixRhoFixBias <- function(c1_vec,
   # Feasibility checks happen inside FinalizeGrid()
   FinalizeGrid(grid, a0 = a0, b0 = b0, c0 = c0, sigma_eY = sigma_eY, add_derived = add_derived)
 }
+
 
 
 # ---- Design 2 ----
