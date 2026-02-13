@@ -61,78 +61,69 @@ MakeGrid_NoV <- function(a1, c1, b1, b2,
 }
 
 # ---- Design 1 ----
-# Fix total correlation rho_total and fix confounding strength bias = b1*a1,
-# while *varying the decomposition* of rho_total into the U-driven component
-# rho_U = a1*c1 versus the V-driven component rho_V = a2*c2.
-#
-# Implementation:
-#   - Hold (a1, a2) fixed (U and V coefficients on the exposure).
-#   - Hold bias fixed via b1 = bias/a1 (requires a1 != 0).
-#   - Vary c1 over c1_vec to change rho_U = a1*c1.
-#   - Solve for c2 so that rho_total is fixed:
-#         rho_total = a1*c1 + a2*c2  =>  c2 = (rho_total - a1*c1)/a2
-#
-# Notes:
-#   - Requires a2 != 0 (otherwise rho_total is fully determined by a1*c1).
-#   - Feasibility requires: a1^2 + a2^2 < 1 and c1^2 + c2^2 < 1.
-
-MakeGrid_D1_FixRhoFixBias <- function(c1_vec,
-                                      a1,
-                                      a2,
-                                      rho_total,
-                                      bias,
-                                      b2,
-                                      a0 = 0, b0 = 0, c0 = 0,
-                                      sigma_eY = 1,
-                                      add_derived = TRUE) {
-  if (abs(rho_total) >= 1) stop("rho_total must satisfy |rho_total| < 1.")
-  if (!is.finite(a1) || a1 == 0) stop("a1 must be finite and nonzero (needed for b1 = bias/a1).")
-  if (!is.finite(a2) || a2 == 0) stop("a2 must be finite and nonzero (needed to vary rho decomposition).")
-  if (a1^2 + a2^2 >= 1) stop("Need a1^2 + a2^2 < 1.")
-  if (any(!is.finite(c1_vec))) stop("c1_vec must be finite.")
-  
-  c1 <- c1_vec
-  
-  # Solve for c2 to keep rho_total fixed while varying c1
-  c2 <- (rho_total - a1 * c1) / a2
-  
-  # Drop infeasible rows (so the slide-style grid has empty regions)
+MakeGrid_D1_FixRho <- function(
+    rho_total_vec,
+    b1_vec,
+    f_vec,
+    r_c = 0.92,          # must satisfy max(rho_total_vec) < r_c < 1
+    b2 = 0.3,
+    a0 = 0, b0 = 0, c0 = 0,
+    sigma_eY = 1,
+    add_derived = TRUE
+) {
   tol <- 1e-12
-  keep <- (c1^2 + c2^2) < (1 - tol)
-  if (!any(keep)) {
-    return(data.frame())  # nothing feasible for this (rho_total, bias)
+  if (r_c <= 0 || r_c >= 1) stop("Need 0 < r_c < 1.")
+  if (any(f_vec <= 0 | f_vec >= 1)) stop("Need f in (0,1).")
+  if (any(abs(rho_total_vec) >= (r_c - 1e-8))) {
+    stop("Need |rho_total| < r_c (otherwise a1^2+a2^2=(rho/r_c)^2 >= 1).")
   }
   
-  c1 <- c1[keep]
-  c2 <- c2[keep]
+  grids <- list()
+  idx <- 1
   
-  
-  # Fix confounding strength: bias = b1*a1 -> b1 = bias/a1
-  b1 <- rep(bias / a1, length(c1))
-  
-  # Allow b2 scalar or length(c1_vec)
-  if (length(b2) == 1) {
-    b2_use <- rep(b2, length(c1))
-  } else if (length(b2) == length(c1)) {
-    b2_use <- b2
-  } else {
-    stop("b2 must be length 1 or length(c1_vec).")
+  for (rho_total in rho_total_vec) {
+    for (b1 in b1_vec) {
+      for (f in f_vec) {
+        
+        # Construct c on a fixed-radius circle: c1^2+c2^2 = r_c^2
+        c1 <- r_c * sqrt(1 - f)
+        c2 <- r_c * sqrt(f)
+        
+        # Construct a so that corr(A, Atilde)=rho_total and rho_V/rho = f
+        a1 <- (rho_total * sqrt(1 - f)) / r_c
+        a2 <- (rho_total * sqrt(f)) / r_c
+        
+        # Safety (should hold by construction, but keep tol margin consistent with AssertParsFeasible)
+        if ((c1^2 + c2^2) >= (1 - tol)) next
+        if ((a1^2 + a2^2) >= (1 - tol)) next
+        
+        grid <- data.frame(
+          a1 = a1, a2 = a2,
+          c1 = c1, c2 = c2,
+          b1 = b1, b2 = b2,
+          rho_target = rho_total,
+          f_target = f,
+          r_c = r_c,
+          stringsAsFactors = FALSE
+        )
+        
+        # Add required columns + derived columns using your existing helper
+        grid <- FinalizeGrid(
+          grid,
+          a0 = a0, b0 = b0, c0 = c0,
+          sigma_eY = sigma_eY,
+          add_derived = add_derived
+        )
+        
+        grids[[idx]] <- grid
+        idx <- idx + 1
+      }
+    }
   }
   
-  grid <- data.frame(
-    a1 = rep(a1, length(c1)),
-    a2 = rep(a2, length(c1)),
-    c1 = c1,
-    c2 = c2,
-    b1 = b1,
-    b2 = b2_use,
-    stringsAsFactors = FALSE
-  )
-  
-  # Feasibility checks happen inside FinalizeGrid()
-  FinalizeGrid(grid, a0 = a0, b0 = b0, c0 = c0, sigma_eY = sigma_eY, add_derived = add_derived)
+  if (length(grids) == 0) return(data.frame())
+  do.call(rbind, grids)
 }
-
 
 
 # ---- Design 2 ----
