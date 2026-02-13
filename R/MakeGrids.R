@@ -127,97 +127,50 @@ MakeGrid_D1_FixRho <- function(
 
 
 # ---- Design 2 ----
-# Fix bias and fix rho_U = a1*c1, then vary rho_total via rho_V = a2*c2 by varying a2.
+# Fix bias and fix  Fix U->A (a1) and U->Atilde (c1). 
+# rho_U = a1*c1, then vary rho_total via rho_V = a2*c2 by varying  V->A and V->Atilde with constraint a2=c2, chosen to hit rho(A,Atilde)=rho_target.
 # Interpretation: corr(A, Atilde) increases "via V" (not via U).
 
-MakeGrid_D2_FixBiasVaryRho_ByA2 <- function(a1,
-                                            a2_vec,
-                                            c1,
-                                            c2,
-                                            bias,
-                                            b2,
-                                            a0 = 0, b0 = 0, c0 = 0,
-                                            sigma_eY = 1,
-                                            add_derived = TRUE) {
-  if (length(a1) != 1 || !is.finite(a1) || a1 == 0) stop("a1 must be a single finite nonzero value.")
-  if (any(!is.finite(a2_vec))) stop("a2_vec must be finite.")
-  if (length(c1) != 1 || !is.finite(c1)) stop("c1 must be a single finite value.")
-  if (length(c2) != 1 || !is.finite(c2)) stop("c2 must be a single finite value.")
+MakeGrid_D2_FixU_VaryV <- function(rho_target_vec,
+                                   a1, c1,
+                                   a0 = 0, c0 = 0,
+                                   b0 = 0, b1 = 0, b2,
+                                   sigma_eY = 1) {
+
   
-  # Basic feasibility (FinalizeGrid will also check)
-  if (any(a1^2 + a2_vec^2 >= 1)) stop("Need a1^2 + a2^2 < 1 for all a2.")
-  if (c1^2 + c2^2 >= 1) stop("Need c1^2 + c2^2 < 1.")
+  rho_U <- a1 * c1
   
-  # Fix confounding strength: bias = b1*a1 -> b1 = bias/a1
-  b1 <- rep(bias / a1, length(a2_vec))
+  grid_list <- lapply(rho_target_vec, function(rho_target) {
+    
+    # Need rho_target >= rho_U so that t^2 = rho_target - rho_U is nonnegative
+    t2 <- rho_target - rho_U
+    if (t2 < 0) return(NULL)
+    
+    t <- sqrt(t2)
+    a2 <- t
+    c2 <- t
+    
+    # Feasibility: a1^2 + a2^2 < 1 and c1^2 + c2^2 < 1
+    if (a1^2 + a2^2 >= 1) return(NULL)
+    if (c1^2 + c2^2 >= 1) return(NULL)
+    
+    data.frame(
+      design = "D2",
+      rho_target = rho_target,
+      rho_U = rho_U,
+      rho_V = a2 * c2,
+      a0 = a0, a1 = a1, a2 = a2,
+      c0 = c0, c1 = c1, c2 = c2,
+      b0 = b0, b1 = b1, b2 = b2,
+      sigma_eY = sigma_eY,
+      stringsAsFactors = FALSE
+    )
+  })
   
-  # Allow b2 scalar or length(a2_vec)
-  if (length(b2) == 1) {
-    b2_use <- rep(b2, length(a2_vec))
-  } else if (length(b2) == length(a2_vec)) {
-    b2_use <- b2
-  } else {
-    stop("b2 must be length 1 or length(a2_vec).")
+  grid <- do.call(rbind, grid_list)
+  if (is.null(grid) || nrow(grid) == 0) {
+    stop("D2 grid is empty: rho_target_vec may be below rho_U=a1*c1 or violates feasibility constraints.")
   }
-  
-  grid <- data.frame(
-    a1 = rep(a1, length(a2_vec)),
-    a2 = a2_vec,
-    c1 = rep(c1, length(a2_vec)),
-    c2 = rep(c2, length(a2_vec)),
-    b1 = b1,
-    b2 = b2_use,
-    stringsAsFactors = FALSE
-  )
-  
-  FinalizeGrid(grid, a0 = a0, b0 = b0, c0 = c0, sigma_eY = sigma_eY, add_derived = add_derived)
-}
-
-
-
-# ---- Design 3 ----
-# Fix bias and fix rho_V = a2*c2, then vary rho_total via rho_U = a1*c1 by varying c1.
-# Interpretation: corr(A, Atilde) increases "via U" (contrast to Design 2).
-
-MakeGrid_D3_FixBiasVaryRho_ByC1 <- function(c1_vec,
-                                            a1,
-                                            a2,
-                                            c2,
-                                            bias,
-                                            b2,
-                                            a0 = 0, b0 = 0, c0 = 0,
-                                            sigma_eY = 1,
-                                            add_derived = TRUE) {
-  if (length(a1) != 1 || !is.finite(a1) || a1 == 0) stop("a1 must be a single finite nonzero value.")
-  if (length(a2) != 1 || !is.finite(a2)) stop("a2 must be a single finite value.")
-  if (length(c2) != 1 || !is.finite(c2)) stop("c2 must be a single finite value.")
-  if (any(!is.finite(c1_vec))) stop("c1_vec must be finite.")
-  
-  # Basic feasibility (FinalizeGrid will also check)
-  if (a1^2 + a2^2 >= 1) stop("Need a1^2 + a2^2 < 1.")
-  if (any(c1_vec^2 + c2^2 >= 1)) stop("Need c1^2 + c2^2 < 1 for all c1.")
-  
-  # Fix confounding strength: bias = b1*a1 -> b1 = bias/a1
-  b1 <- rep(bias / a1, length(c1_vec))
-  
-  # Allow b2 scalar or length(c1_vec)
-  if (length(b2) == 1) {
-    b2_use <- rep(b2, length(c1_vec))
-  } else if (length(b2) == length(c1_vec)) {
-    b2_use <- b2
-  } else {
-    stop("b2 must be length 1 or length(c1_vec).")
-  }
-  
-  grid <- data.frame(
-    a1 = rep(a1, length(c1_vec)),
-    a2 = rep(a2, length(c1_vec)),
-    c1 = c1_vec,
-    c2 = rep(c2, length(c1_vec)),
-    b1 = b1,
-    b2 = b2_use,
-    stringsAsFactors = FALSE
-  )
-  
-  FinalizeGrid(grid, a0 = a0, b0 = b0, c0 = c0, sigma_eY = sigma_eY, add_derived = add_derived)
+  rownames(grid) <- NULL
+  grid
 }
