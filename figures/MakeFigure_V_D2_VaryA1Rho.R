@@ -113,7 +113,7 @@ p_nce <- ggplot(dat2, aes(x = f, y = beta, color = model, shape = model, group =
   facet_grid(a1 ~ rho, labeller = FacetLabeller) +
   labs(
     title = "Mean NCE coefficient \u00B1 SE",
-    x = expression(f == rho[V] / rho),
+    x = expression(rho[V] / rho),
     y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
     color = "Model:",
     shape = "Model:"
@@ -129,7 +129,7 @@ p_pow <- ggplot(dat2, aes(x = f, y = power, color = model, shape = model, group 
   facet_grid(a1 ~ rho, labeller = FacetLabeller) +
   labs(
     title = "Power",
-    x = expression(f == rho[V] / rho),
+    x = expression(rho[V] / rho),
     y = "Power",
     color = "Model:",
     shape = "Model:"
