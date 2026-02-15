@@ -1,0 +1,59 @@
+List of 24
+ $ created_at     : chr "2026-02-15 08:36:25.098714"
+ $ script         : chr "Run_V_D2_HighRho.R"
+ $ design_label   : chr "D2_highRho_unequalA2"
+ $ save_prefix    : chr "results/withV/D2/withV_D2_highRho_unequalA2_norm_n1000_it1000_seed314_20260215_082800"
+ $ n_sample       : num 1000
+ $ n_iters        : num 1000
+ $ seed           : num 314
+ $ noise_dist     : chr "norm"
+ $ df_t           : num 5
+ $ alpha          : num 0.05
+ $ robust_se      : logi FALSE
+ $ f_vec          : num [1:21] 0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 ...
+ $ a1_vec         : num [1:3] 0.25 0.35 0.45
+ $ rho_total_vec  : num [1:4] 0.7 0.8 0.9 0.95
+ $ a2_margin      : num 0.03
+ $ a2_cap         : num 0.97
+ $ b0             : num 0
+ $ b1             : num 0.3
+ $ b2             : num 0.3
+ $ sigma_eY       : num 1
+ $ grid_dim       : int [1:2] 79 19
+ $ grid_preview   :'data.frame':	10 obs. of  19 variables:
+  ..$ f_target  : num [1:10] 0.7 0.75 0.8 0.85 0.9 0.95 1 0.8 0.85 0.9
+  ..$ b1        : num [1:10] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+  ..$ design    : chr [1:10] "D2_highRho_unequalA2" "D2_highRho_unequalA2" "D2_highRho_unequalA2" "D2_highRho_unequalA2" ...
+  ..$ rho_target: num [1:10] 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.8 0.8 0.8
+  ..$ a1        : num [1:10] 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25 0.25
+  ..$ a2        : num [1:10] 0.938 0.938 0.938 0.938 0.938 ...
+  ..$ b2        : num [1:10] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+  ..$ c1        : num [1:10] 0.84 0.7 0.56 0.42 0.28 ...
+  ..$ c2        : num [1:10] 0.522 0.56 0.597 0.634 0.671 ...
+  ..$ a0        : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ b0        : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ c0        : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ sigma_eY  : num [1:10] 1 1 1 1 1 1 1 1 1 1
+  ..$ rho_U     : num [1:10] 0.21 0.175 0.14 0.105 0.07 ...
+  ..$ rho_V     : num [1:10] 0.49 0.525 0.56 0.595 0.63 0.665 0.7 0.64 0.68 0.72
+  ..$ rho_total : num [1:10] 0.7 0.7 0.7 0.7 0.7 0.7 0.7 0.8 0.8 0.8
+  ..$ rho_rel_U : num [1:10] 0.3 0.25 0.2 0.15 0.1 ...
+  ..$ bias      : num [1:10] 0.075 0.075 0.075 0.075 0.075 0.075 0.075 0.075 0.075 0.075
+  ..$ f_achieved: num [1:10] 0.7 0.75 0.8 0.85 0.9 0.95 1 0.8 0.85 0.9
+  ..- attr(*, "out.attrs")=List of 2
+ $ session_info   :List of 13
+  ..$ R.version  :List of 14
+  ..$ platform   : chr "aarch64-apple-darwin20"
+  ..$ locale     : chr "en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8"
+  ..$ tzone      : chr "America/New_York"
+  ..$ tzcode_type: chr "internal"
+  ..$ running    : chr "macOS Tahoe 26.0.1"
+  ..$ RNGkind    : chr [1:3] "Mersenne-Twister" "Inversion" "Rejection"
+  ..$ basePkgs   : chr [1:7] "stats" "graphics" "grDevices" "utils" ...
+  ..$ loadedOnly :List of 1
+  ..$ matprod    : chr "default"
+  ..$ BLAS       : chr "/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib"
+  ..$ LAPACK     : chr "/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib"
+  ..$ LA_version : chr "3.12.1"
+  ..- attr(*, "class")= chr "sessionInfo"
+ $ runtime_minutes: num 8.4
