@@ -2,6 +2,8 @@
 # Fit working regressions and extract SEs + (empirical) power indicators (reject at alpha).
 # - Fit 1: Y ~ A
 # - Fit 2: Y ~ A + Atilde
+# - Fit 3: Y ~ A + V
+# - Fit 4: Y ~ A + Atilde + V
 # Robust SEs use sandwich::vcovHC (HC1).
 
 FitModels <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FALSE) {
