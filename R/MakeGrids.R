@@ -1,7 +1,6 @@
 # MakeGrids.R
 # Grid builders for Practical Considerations NCE simulations
 #
-# Conventions (consistent with DGM.R):
 #   A      = a0 + a1*U + a2*V + eA
 #   Atilde = c0 + c1*U + c2*V + eAt
 #   Y      = b0 + b1*U + b2*A + eY
@@ -61,9 +60,8 @@ MakeGrid_NoV <- function(a1, c1, b1, b2,
 }
 
 # ---- Design 1 ----
-# Fix bias and fix  Fix U->A (a1) and U->Atilde (c1). 
+# Fix bias and fix U->A (a1) and U->Atilde (c1). 
 # rho_U = a1*c1, then vary rho_total via rho_V = a2*c2 by varying  V->A and V->Atilde with constraint a2=c2, chosen to hit rho(A,Atilde)=rho_target.
-#     chosen to hit target rho(A, Atilde) = rho_target.
 # Interpretation: corr(A, Atilde) increases via V.
 
 MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
@@ -116,7 +114,7 @@ MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
     add_derived = add_derived
   )
   
-  # Optional: make D1 look like D2 by adding the V-share column
+  # Make D1 look like D2 object by adding the V-share column
   grid$f_target <- NA_real_
   ok <- abs(grid$rho_total) > tol
   grid$f_target[ok] <- grid$rho_V[ok] / grid$rho_total[ok]
@@ -126,8 +124,7 @@ MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
 }
 
 
-# ---- Design 2 : Fix bias + fix rho_total, vary f over [0,1] ----
-# Goal:
+# ---- Design 2  ----
 #   - Fix bias in the naive exposure model Y ~ A by holding a1 fixed (bias = b1 * a1).
 #   - Fix total corr(A, Atilde) = rho_total.
 #   - Vary f = rho_V / rho_total, i.e., the share of corr(A, Atilde) attributable to V.

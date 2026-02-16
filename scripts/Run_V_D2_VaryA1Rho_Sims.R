@@ -112,8 +112,10 @@ for (a1 in a1_vec) {
   }
 }
 
+# If nothing feasible, still write skip log and stop.
 if (length(grid_list) == 0) {
-  stop("All (a1, rho) combinations were infeasible; nothing to run.")
+  write.csv(skip_log, file = paste0(save_prefix, "_skipped.csv"), row.names = FALSE)
+  stop("All (a1, rho_total) combinations were infeasible; nothing to run.")
 }
 
 grid <- do.call(rbind, grid_list)
