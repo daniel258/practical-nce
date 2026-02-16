@@ -23,7 +23,7 @@ f_vec <- seq(0, 1, by = 0.05)
 a1_vec <- c(0.25, 0.35, 0.45)
 
 # High rho_total values to explore
-rho_total_vec <- c(0.70, 0.80, 0.90, 0.95)
+rho_total_vec <- c(0.60,0.70, 0.80, 0.90, 0.95)
 
 # Outcome model parameters
 b0 <- 0
