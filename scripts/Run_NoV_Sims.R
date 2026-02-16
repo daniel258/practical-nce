@@ -93,3 +93,5 @@ writeLines(capture.output(str(manifest, max.level = 2)),
 message("Saved: ", paste0(save_prefix, "_sims.rds"))
 message("Saved: ", paste0(save_prefix, "_agg.csv"))
 message("Saved: ", paste0(save_prefix, "_manifest.rds / _manifest.txt"))
+
+invisible(res)
