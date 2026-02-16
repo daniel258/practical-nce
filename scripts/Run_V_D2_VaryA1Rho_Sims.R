@@ -1,4 +1,4 @@
-# Run_V_D2_VaryA1Rho.R
+# Run_V_D2_VaryA1Rho_Sims.R
 # Design D2:
 #   - Within each (a1, rho_total): a1 fixed (=> bias b1*a1 fixed), rho_total fixed
 #   - Vary f in [0,1], keep only feasible f values (gridmaker drops infeasible rows)
@@ -44,6 +44,13 @@ source("R/DGM.R")
 source("R/FitModels.R")
 source("R/MakeGrids.R")
 source("R/RunSims.R")
+
+# -------------------- output prefix  ----
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
+stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+tag <- sprintf("withV_D2_varyA1Rho_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
+save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
 # Safe wrapper: returns NULL if the D2 gridmaker errors (e.g., empty grid)
 SafeMakeGrid_D2 <- function(...) {
@@ -113,11 +120,6 @@ grid <- do.call(rbind, grid_list)
 rownames(grid) <- NULL
 
 # -------------------- run --------------------
-dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
-
-stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-tag <- sprintf("withV_D2_varyA1Rho_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
-save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
 t0 <- proc.time()
 
@@ -134,12 +136,12 @@ res <- RunSims(
 )
 
 elapsed_sec <- as.numeric((proc.time() - t0)["elapsed"])
-message(sprintf("[Run_V_D2_VaryA1Rho] Total runtime: %.1f sec (%.2f min)", elapsed_sec, elapsed_sec / 60))
+message(sprintf("[Run_V_D2_VaryA1Rho_Sims] Total runtime: %.1f sec (%.2f min)", elapsed_sec, elapsed_sec / 60))
 
 # -------------------- manifest --------------------
 manifest <- list(
   created_at      = as.character(Sys.time()),
-  script          = "Run_V_D2_VaryA1Rho.R",
+  script          = "Run_V_D2_VaryA1Rho_Sims.R",
   design_label    = design_label,
   save_prefix     = save_prefix,
   n_sample        = n_sample,
@@ -167,9 +169,11 @@ manifest <- list(
 saveRDS(manifest, file = paste0(save_prefix, "_manifest.rds"))
 writeLines(capture.output(str(manifest, max.level = 2)),
            con = paste0(save_prefix, "_manifest.txt"))
+write.csv(skip_log, file = paste0(save_prefix, "_skipped.csv"), row.names = FALSE)
 
 message("Saved: ", paste0(save_prefix, "_sims.rds"))
 message("Saved: ", paste0(save_prefix, "_agg.csv"))
 message("Saved: ", paste0(save_prefix, "_manifest.rds / _manifest.txt"))
+message("Saved: ", paste0(save_prefix, "_skipped.csv"))
 
 invisible(res)

@@ -1,4 +1,4 @@
-# Run_V_D1.R
+# Run_V_D1_Sims.R
 # Runs simulations for Design D1 (with V), where:
 # - D1 grid varies only V->A and V->Atilde via a2=c2 to hit rho_target
 
@@ -28,6 +28,7 @@ b1 <- 0.3
 b2 <- 0.3
 sigma_eY <- 1
 
+# Output folder + prefix
 out_dir <- "results/withV/D1"
 design_label <- "D1"
 
@@ -36,6 +37,13 @@ source("R/DGM.R")
 source("R/FitModels.R")
 source("R/MakeGrids.R")
 source("R/RunSims.R")
+
+# -------------------- output prefix  ----
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
+stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+tag <- sprintf("withV_D1_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
+save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
 # -------------------- grid --------------------
 grid <- MakeGrid_D1_FixU_VaryV(
@@ -49,11 +57,6 @@ grid <- MakeGrid_D1_FixU_VaryV(
 grid$design <- design_label
 
 # -------------------- run --------------------
-dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
-
-stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-tag <- sprintf("withV_D1_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
-save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
 t0 <- proc.time()
 
@@ -70,12 +73,12 @@ res <- RunSims(
 )
 
 elapsed_sec <- as.numeric((proc.time() - t0)["elapsed"])
-message(sprintf("[Run_V_D1] Total runtime: %.1f sec (%.2f min)", elapsed_sec, elapsed_sec / 60))
+message(sprintf("[Run_V_D1_Sims] Total runtime: %.1f sec (%.2f min)", elapsed_sec, elapsed_sec / 60))
 
 # -------------------- manifest --------------------
 manifest <- list(
   created_at      = as.character(Sys.time()),
-  script          = "Run_V_D1.R",
+  script          = "Run_V_D1_Sims.R",
   design_label    = design_label,
   save_prefix     = save_prefix,
   n_sample        = n_sample,

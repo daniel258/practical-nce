@@ -64,13 +64,15 @@ MakeGrid_NoV <- function(a1, c1, b1, b2,
 # Fix bias and fix  Fix U->A (a1) and U->Atilde (c1). 
 # rho_U = a1*c1, then vary rho_total via rho_V = a2*c2 by varying  V->A and V->Atilde with constraint a2=c2, chosen to hit rho(A,Atilde)=rho_target.
 #     chosen to hit target rho(A, Atilde) = rho_target.
-# Interpretation: corr(A, Atilde) increases "via V" (not via U).
+# Interpretation: corr(A, Atilde) increases via V.
 
 MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
                                    a1, c1,
                                    a0 = 0, c0 = 0,
                                    b0 = 0, b1 = 0, b2,
-                                   sigma_eY = 1) {
+                                   sigma_eY = 1,
+                                   add_derived = TRUE,
+                                   tol = 1e-12) {
   
   rho_U <- a1 * c1
   
@@ -78,40 +80,53 @@ MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
     
     # Need rho_target >= rho_U so that t^2 = rho_target - rho_U is nonnegative
     t2 <- rho_target - rho_U
-    if (t2 < 0) return(NULL)
+    if (t2 < -tol) return(NULL)
     
+    t2 <- max(t2, 0)  # guard tiny negative from floating point
     t  <- sqrt(t2)
+    
     a2 <- t
     c2 <- t
     
-    # Feasibility: a1^2 + a2^2 < 1 and c1^2 + c2^2 < 1
-    if (a1^2 + a2^2 >= 1) return(NULL)
-    if (c1^2 + c2^2 >= 1) return(NULL)
+    # Basic feasibility
+    if ((a1^2 + a2^2) >= (1 - tol)) return(NULL)
+    if ((c1^2 + c2^2) >= (1 - tol)) return(NULL)
     
     data.frame(
-      design = "D2",
+      design     = "D1",
       rho_target = rho_target,
-      rho_U = rho_U,
-      rho_V = a2 * c2,
-      rho_achieved = a1 * c1 + a2 * c2,
-      a0 = a0, a1 = a1, a2 = a2,
-      c0 = c0, c1 = c1, c2 = c2,
-      b0 = b0, b1 = b1, b2 = b2,
-      sigma_eY = sigma_eY,
+      a1 = a1, a2 = a2,
+      c1 = c1, c2 = c2,
+      b1 = b1, b2 = b2,
       stringsAsFactors = FALSE
     )
   })
   
   grid <- do.call(rbind, grid_list)
+  
   if (is.null(grid) || nrow(grid) == 0) {
-    stop("D2 grid is empty: rho_target_vec may be below rho_U=a1*c1 or violates feasibility constraints.")
+    stop("D1 grid is empty: rho_target_vec may be below rho_U=a1*c1 or violates feasibility constraints.")
   }
+  
+  # Add intercepts, sigma, feasibility checks, and derived columns (rho_U/rho_V/rho_total/rho_rel_U/bias)
+  grid <- FinalizeGrid(
+    grid,
+    a0 = a0, b0 = b0, c0 = c0,
+    sigma_eY = sigma_eY,
+    add_derived = add_derived
+  )
+  
+  # Optional: make D1 look like D2 by adding the V-share column
+  grid$f_target <- NA_real_
+  ok <- abs(grid$rho_total) > tol
+  grid$f_target[ok] <- grid$rho_V[ok] / grid$rho_total[ok]
+  
   rownames(grid) <- NULL
   grid
 }
 
 
-# ---- Design 2 (new): Fix bias + fix rho_total, vary f over [0,1] ----
+# ---- Design 2 : Fix bias + fix rho_total, vary f over [0,1] ----
 # Goal:
 #   - Fix bias in the naive exposure model Y ~ A by holding a1 fixed (bias = b1 * a1).
 #   - Fix total corr(A, Atilde) = rho_total.
@@ -127,8 +142,6 @@ MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
 # Requirements:
 #   - a1^2 + a2^2 < 1
 #   - c1^2 + c2^2 < 1 for all f in [0,1]
-# Practical sufficient condition (not required, but helpful):
-#   |rho_total| < |a1| and |rho_total| < |a2|
 
 MakeGrid_D2_FixBiasFixRho_VaryF <- function(
     rho_total,

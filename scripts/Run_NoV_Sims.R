@@ -1,8 +1,7 @@
 # Run_NoV_Sims.R
-# Run simulations for the "no V affects A/Atilde" case by setting a2=c2=0 in the grid.
-# Uses your existing DGM(), FitModels(), RunSims() without modification.
+# Run simulations for the "no V affects A/Atilde" case by setting a2=c2=0.
 
-# ---- user inputs ----
+# -------------------- user inputs --------------------
 
 n_sample <- 1000
 n_iters  <- 1000
@@ -24,14 +23,20 @@ sigma_eY <- 1
 
 # Output folder + prefix
 out_dir <- "results/noV"
-tag <- sprintf("noV_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
+design_label <- "NoV"
 
-# ---- load project functions ----
-
+# -------------------- load project code --------------------
 source("R/DGM.R")
 source("R/FitModels.R")
 source("R/MakeGrids.R")
 source("R/RunSims.R")
+
+# -------------------- output prefix  ----
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
+stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+tag <- sprintf("noV_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
+save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
 # ---- build NO-V grid  ----
 #  MakeGrid_NoV() hard-sets a2=0 and c2=0.
@@ -44,12 +49,10 @@ grid <- MakeGrid_NoV(
   add_derived = TRUE
 )
 
-# Make output prefix
-dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
-stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
+grid$design <- design_label
 
-# ---- run sims ----
+# -------------------- run --------------------
+
 t0 <- proc.time()
 res <- RunSims(
   grid = grid,
@@ -65,7 +68,7 @@ res <- RunSims(
 elapsed_sec <- as.numeric((proc.time() - t0)["elapsed"])
 message(sprintf("Total runtime: %.1f seconds (%.2f minutes)", elapsed_sec, elapsed_sec / 60))
 
-# ---- manifest (for reproducibility) ----
+# -------------------- manifest --------------------
 manifest <- list(
   created_at = as.character(Sys.time()),
   script = "Run_NoV_Sims.R",

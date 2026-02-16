@@ -1,4 +1,4 @@
-# Run_V_D2.R
+# Run_V_D2_Sims.R
 # Runs simulations for Design D2:
 #   - Fix bias via fixed a1 (bias in Y~A is b1*a1)
 #   - Fix rho_total = cor(A, Atilde)
@@ -41,6 +41,13 @@ source("R/FitModels.R")
 source("R/MakeGrids.R")
 source("R/RunSims.R")
 
+# -------------------- output prefix  ----
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
+stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+tag <- sprintf("withV_D2_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
+save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
+
 # -------------------- grid --------------------
 grid <- MakeGrid_D2_FixBiasFixRho_VaryF(
   rho_total = rho_total,
@@ -59,11 +66,6 @@ grid <- MakeGrid_D2_FixBiasFixRho_VaryF(
 grid$design <- design_label
 
 # -------------------- run --------------------
-dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
-
-stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-tag <- sprintf("withV_D2_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
-save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
 t0 <- proc.time()
 
@@ -80,12 +82,12 @@ res <- RunSims(
 )
 
 elapsed_sec <- as.numeric((proc.time() - t0)["elapsed"])
-message(sprintf("[Run_V_D2] Total runtime: %.1f sec (%.2f min)", elapsed_sec, elapsed_sec / 60))
+message(sprintf("[Run_V_D2_Sims] Total runtime: %.1f sec (%.2f min)", elapsed_sec, elapsed_sec / 60))
 
 # -------------------- manifest --------------------
 manifest <- list(
   created_at      = as.character(Sys.time()),
-  script          = "Run_V_D2.R",
+  script          = "Run_V_D2_Sims.R",
   design_label    = design_label,
   save_prefix     = save_prefix,
   n_sample        = n_sample,
