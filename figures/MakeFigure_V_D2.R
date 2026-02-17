@@ -5,7 +5,7 @@
 # Shown for Model 2 (Y~A+Atilde) and Model 4 (Y~A+Atilde+V)
 
 # ---- YOU EDIT THIS ----
-run_prefix <- "results/withV/D2/withV_D2_norm_n1000_it1000_seed314_20260213_155929"
+run_prefix <- "results/withV/D2/withV_D2_norm_n1000_it1000_seed314_20260216_082059"
 # reads: paste0(run_prefix, "_agg.csv")
 
 # ---- output ----
@@ -79,8 +79,7 @@ p_coef <- ggplot(dat, aes(x = f, y = beta, color = model, shape = model)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
   labs(
     title = "(A) Mean NCE coefficient \u00B1 SE",
-    x = expression(rho[V] / rho),
-    y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
+    x = expression(paste("Share of correlation from V (", rho[V]/rho, ")")),    y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
     color = "Model:",
     shape = "Model:"
   ) +
@@ -94,7 +93,7 @@ p_pow <- ggplot(dat, aes(x = f, y = power, color = model, shape = model)) +
   scale_y_continuous(limits = c(0, 1)) +
   labs(
     title = "(B) Power",
-    x = expression(rho[V] / rho),
+    x = expression(paste("Share of correlation from V (", rho[V]/rho, ")")),    
     y = "Power",
     color = "Model:",
     shape = "Model:"

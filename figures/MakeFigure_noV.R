@@ -1,8 +1,8 @@
-# MakeFigure_NoV_NaiveBias_OneLegend.R
+# MakeFigure_NoV.R
 # Requires: ggplot2
 
 # ---- YOU EDIT THIS ----
-run_prefix <- "results/noV/noV_norm_n1000_it1000_seed314_20260206_114532"
+run_prefix <- "results/noV/noV_norm_n1000_it1000_seed314_20260216_080300"
 # Reads: paste0(run_prefix, "_agg.csv")
 
 # ---- output ----
@@ -15,7 +15,7 @@ library(ggplot2)
 infile <- paste0(run_prefix, "_agg.csv")
 agg <- read.csv(infile)
 
-agg$c1_f <- factor(agg$c1)
+agg$c1_f <- factor(agg$c1, levels = sort(unique(agg$c1)))
 
 # ---- theme ----
 BaseTheme <- function(legend_pos = "none") {
@@ -35,31 +35,35 @@ GetLegendGrob <- function(p) {
 }
 
 # ---- panels ----
-p_bias <- ggplot(agg, aes(x = a1, y = bias_A_fit1, color = c1_f)) +
+p_bias <- ggplot(agg, aes(x = a1, y = bias_A_fit1, group = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "(A) Bias in Exposure Effect", x = NULL, y = "Bias", color = expression(c[1])) +
-  BaseTheme(legend_pos = "bottom")
+  labs(title = "(A) Bias in Exposure Effect", x = NULL, y = "Bias", color = "black") +
+  BaseTheme(legend_pos = "bottom") + 
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 p_coef <- ggplot(agg, aes(x = a1, y = beta_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "(B) NCE Coefficient", x = NULL, y = "Coefficient", color = expression(c[1])) +
-  BaseTheme()
+  labs(title = "(B) NCE Coefficient", x = NULL, y = "Coefficient", color = "black") +
+  BaseTheme() + 
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 p_pow <- ggplot(agg, aes(x = a1, y = power_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
   labs(title = "(C) Power of NCE Test", x = expression(a[1]), y = "Power", color = expression(c[1])) +
-  BaseTheme()
+  BaseTheme() + 
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 p_se <- ggplot(agg, aes(x = a1, y = se_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
   labs(title = "(D) SE of NCE Coefficient", x = expression(a[1]), y = "SE", color = expression(c[1])) +
-  BaseTheme()
+  BaseTheme() + 
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
-legend_grob <- GetLegendGrob(p_bias)
+legend_grob <- GetLegendGrob(p_coef)
 p_bias_noleg <- p_bias + theme(legend.position = "none")
 
 # ---- draw combined 2x2 + legend to current device ----

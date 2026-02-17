@@ -5,7 +5,7 @@
 # Shown for Model 2 (Y~A+Atilde) and Model 4 (Y~A+Atilde+V)
 
 # ---- YOU EDIT THIS ----
-run_prefix <- "results/withV/D1/withV_D1_norm_n1000_it1000_seed314_20260213_144208"
+run_prefix <- "results/withV/D1/withV_D1_norm_n1000_it1000_seed314_20260216_081732"
 # reads: paste0(run_prefix, "_agg.csv")
 
 # ---- output ----
@@ -47,6 +47,7 @@ d4 <- data.frame(
 )
 
 dat <- rbind(d2, d4)
+dat <- dat[order(dat$model, dat$rho), ]
 dat$model <- factor(dat$model, levels = c("Y ~ A + Atilde", "Y ~ A + Atilde + V"))
 dat$lo <- dat$beta - dat$se
 dat$hi <- dat$beta + dat$se
@@ -69,32 +70,33 @@ GetLegendGrob <- function(p) {
 }
 
 # ---- panel (A): mean coef +/- mean SE (not a CI band) ----
-p_coef <- ggplot(dat, aes(x = rho, y = beta, color = model)) +
+p_coef <- ggplot(dat, aes(x = rho, y = beta, color = model, shape = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model), alpha = 0.18, color = NA, show.legend = FALSE) +
-  geom_line(linewidth = 0.9, linetype = 2) +
+  geom_line(aes(group = model),linewidth = 0.9, linetype = 2) +
   geom_point(size = 1.6) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) + 
   labs(
-    color = "Model:", fill = "Model:",
+    color = "Model:", shape = "Model:",
     title = "(A) Mean NCE coefficient \u00B1 SE",
-    x = expression(cor(A, tilde(A))),
+    x = expression(paste("\u03C1 = Corr(A, ", tilde(A), ")")),
     y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")"))
   ) +
   BaseTheme(legend_pos = "bottom") + 
-  scale_x_continuous(limits = c(0.1, 0.9), breaks = seq(0.1, 0.9, by = 0.2))
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 # ---- panel (B): power ----
-p_pow <- ggplot(dat, aes(x = rho, y = power, color = model)) +
-  geom_line(linewidth = 0.9, linetype = 2) +
+p_pow <- ggplot(dat, aes(x = rho, y = power, color = model, shape = model)) +
+  geom_line(aes(group = model), linewidth = 0.9, linetype = 2) +
   geom_point(size = 1.6) +
   scale_y_continuous(limits = c(0, 1)) +
   labs(
     title = "(B) Power",
-    x = expression(cor(A, tilde(A))),
-    y = "Power"
+    x = expression(paste("\u03C1 = Corr(A, ", tilde(A), ")")),
+    y = "Power",
+    color = "Model:", shape = "Model:"
   ) +
   BaseTheme(legend_pos = "bottom") + 
-  scale_x_continuous(limits = c(0.1, 0.9), breaks = seq(0.1, 0.9, by = 0.2))
+  scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 # ---- one legend, two panels ----
 legend_grob <- GetLegendGrob(p_coef)
