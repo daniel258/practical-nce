@@ -39,14 +39,14 @@ p_bias <- ggplot(agg, aes(x = a1, y = bias_A_fit1, group = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
   labs(title = "(A) Bias in Exposure Effect", x = NULL, y = "Bias", color = "black") +
-  BaseTheme(legend_pos = "bottom") + 
+  BaseTheme() + 
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 p_coef <- ggplot(agg, aes(x = a1, y = beta_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "(B) NCE Coefficient", x = NULL, y = "Coefficient", color = "black") +
-  BaseTheme() + 
+  labs(title = "(B) NCE Coefficient", x = NULL, y = "Coefficient", color = expression(c[1])) +
+  BaseTheme(legend_pos = "bottom") + 
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 p_pow <- ggplot(agg, aes(x = a1, y = power_Atilde_fit2, color = c1_f)) +
@@ -64,7 +64,7 @@ p_se <- ggplot(agg, aes(x = a1, y = se_Atilde_fit2, color = c1_f)) +
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 legend_grob <- GetLegendGrob(p_coef)
-p_bias_noleg <- p_bias + theme(legend.position = "none")
+p_coef_noleg <- p_coef + theme(legend.position = "none")
 
 # ---- draw combined 2x2 + legend to current device ----
 DrawCombined <- function() {
@@ -75,8 +75,8 @@ DrawCombined <- function() {
   )))
   vp <- function(r, c) grid::viewport(layout.pos.row = r, layout.pos.col = c)
   
-  print(p_bias_noleg, vp = vp(1, 1))
-  print(p_coef,       vp = vp(1, 2))
+  print(p_bias, vp = vp(1, 1))
+  print(p_coef_noleg,       vp = vp(1, 2))
   print(p_pow,        vp = vp(2, 1))
   print(p_se,         vp = vp(2, 2))
   
