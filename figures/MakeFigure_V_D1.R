@@ -1,7 +1,7 @@
 # MakeFigure_V_D1.R
 # Two-panel figure for Design D1 (with V):
-#   (A) mean NCE coefficient +/- mean model-based SE
-#   (B) power (reject proportion) for H0: beta_Atilde = 0
+#   (A) mean NCE coefficient +/- SD
+#   (B) power for H0: beta_Atilde = 0
 # Shown for Model 2 (Y~A+Atilde) and Model 4 (Y~A+Atilde+V)
 
 # ---- YOU EDIT THIS ----
@@ -34,7 +34,7 @@ d2 <- data.frame(
   rho   = agg$rho_plot,
   model = "Y ~ A + Atilde",
   beta  = agg$beta_Atilde_fit2,
-  se    = agg$se_Atilde_fit2,
+  sd    = agg$sd_beta_Atilde_fit2,
   power = agg$power_Atilde_fit2
 )
 
@@ -42,15 +42,15 @@ d4 <- data.frame(
   rho   = agg$rho_plot,
   model = "Y ~ A + Atilde + V",
   beta  = agg$beta_Atilde_fit4,
-  se    = agg$se_Atilde_fit4,
+  sd    = agg$sd_beta_Atilde_fit4,
   power = agg$power_Atilde_fit4
 )
 
 dat <- rbind(d2, d4)
 dat <- dat[order(dat$model, dat$rho), ]
 dat$model <- factor(dat$model, levels = c("Y ~ A + Atilde", "Y ~ A + Atilde + V"))
-dat$lo <- dat$beta - dat$se
-dat$hi <- dat$beta + dat$se
+dat$lo <- dat$beta - dat$sd
+dat$hi <- dat$beta + dat$sd
 
 # ---- theme ----
 BaseTheme <- function(legend_pos = "none") {
@@ -69,7 +69,7 @@ GetLegendGrob <- function(p) {
   g$grobs[[idx[1]]]
 }
 
-# ---- panel (A): mean coef +/- mean SE (not a CI band) ----
+# ---- panel (A): mean coef +/- SD (not a CI band) ----
 p_coef <- ggplot(dat, aes(x = rho, y = beta, color = model, shape = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model), alpha = 0.18, color = NA, show.legend = FALSE) +
   geom_line(aes(group = model),linewidth = 0.9, linetype = 2) +
@@ -77,11 +77,19 @@ p_coef <- ggplot(dat, aes(x = rho, y = beta, color = model, shape = model)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) + 
   labs(
     color = "Model:", shape = "Model:",
-    title = "(A) Mean NCE coefficient \u00B1 SE",
-    x = expression(paste("\u03C1 = Corr(A, ", tilde(A), ")")),
-    y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")"))
+    title = "(A) Mean NCE coefficient \u00B1 SD",
+    x = expression(paste("Corr(A, ", tilde(A), ")")),
+    y = expression(paste("NCE coefficient"))# (", hat(beta)[tilde(A)], ")"))
   ) +
-  BaseTheme(legend_pos = "bottom") + 
+  BaseTheme(legend_pos = "bottom") +
+  scale_color_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
+  scale_shape_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 # ---- panel (B): power ----
@@ -91,11 +99,19 @@ p_pow <- ggplot(dat, aes(x = rho, y = power, color = model, shape = model)) +
   scale_y_continuous(limits = c(0, 1)) +
   labs(
     title = "(B) Power",
-    x = expression(paste("\u03C1 = Corr(A, ", tilde(A), ")")),
+    x = expression(paste("Corr(A, ", tilde(A), ")")),
     y = "Power",
     color = "Model:", shape = "Model:"
   ) +
-  BaseTheme(legend_pos = "bottom") + 
+  BaseTheme(legend_pos = "bottom") +
+  scale_color_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
+  scale_shape_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 # ---- one legend, two panels ----
@@ -125,9 +141,9 @@ DrawCombined()
 # ---- save PNG + PDF ----
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-png(file.path(out_dir, paste0(out_stem, ".png")), width = 8.5, height = 4.5, units = "in", res = 300)
-DrawCombined()
-dev.off()
+# png(file.path(out_dir, paste0(out_stem, ".png")), width = 8.5, height = 4.5, units = "in", res = 300)
+# DrawCombined()
+# dev.off()
 
 pdf(file.path(out_dir, paste0(out_stem, ".pdf")), width = 8.5, height = 4.5)
 DrawCombined()

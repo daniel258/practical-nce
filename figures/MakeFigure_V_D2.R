@@ -79,11 +79,21 @@ p_coef <- ggplot(dat, aes(x = f, y = beta, color = model, shape = model)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
   labs(
     title = "(A) Mean NCE coefficient \u00B1 SE",
-    x = expression(paste("Share of correlation from V (", rho[V]/rho, ")")),    y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
+    x = expression(pi[V]),
+    # x = expression(paste("Share of Corr(A, ", tilde(A), ") from V (", pi[V],")")), 
+    y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
     color = "Model:",
     shape = "Model:"
   ) +
   BaseTheme(legend_pos = "bottom") +
+  scale_color_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
+  scale_shape_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 # ---- panel (B): power ----
@@ -93,12 +103,21 @@ p_pow <- ggplot(dat, aes(x = f, y = power, color = model, shape = model)) +
   scale_y_continuous(limits = c(0, 1)) +
   labs(
     title = "(B) Power",
-    x = expression(paste("Share of correlation from V (", rho[V]/rho, ")")),    
+   # x = expression(paste("Share of correlation from V (", rho[V]/rho, ")")),    
+    x = expression(pi[V]),    
     y = "Power",
     color = "Model:",
     shape = "Model:"
   ) +
   BaseTheme(legend_pos = "bottom") +
+  scale_color_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
+  scale_shape_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 # ---- one legend, two panels ----
@@ -128,9 +147,9 @@ DrawCombined()
 # ---- save PNG + PDF ----
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
-png(file.path(out_dir, paste0(out_stem, ".png")), width = 8.5, height = 4.5, units = "in", res = 300)
-DrawCombined()
-dev.off()
+# png(file.path(out_dir, paste0(out_stem, ".png")), width = 8.5, height = 4.5, units = "in", res = 300)
+# DrawCombined()
+# dev.off()
 
 pdf(file.path(out_dir, paste0(out_stem, ".pdf")), width = 8.5, height = 4.5)
 DrawCombined()

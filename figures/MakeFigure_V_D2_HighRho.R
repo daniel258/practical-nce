@@ -1,7 +1,7 @@
 # MakeFigure_V_D2_HighRho.R
 # Design D2 (high rho_total), faceted by a1 (rows) and rho_total (cols).
 # Outputs two files:
-#   1) Mean NCE coefficient +/- mean model-based SE
+#   1) Mean NCE coefficient +/-  SD
 #   2) Power (reject proportion) for H0: beta_Atilde = 0
 # Both shown for Model 2 (Y~A+Atilde) and Model 4 (Y~A+Atilde+V)
 #
@@ -84,8 +84,9 @@ GetA1Map <- function(run_prefix, agg, A1_full) {
   
   map_full$a1_label <- ifelse(
     is.na(map_full$a2),
-    sprintf("a1=%.2f", map_full$a1),
-    sprintf("a1=%.2f (a2=%.2f)", map_full$a1, map_full$a2)
+    paste0("a[1]==", sprintf("%.2f", map_full$a1)),
+    paste0("a[1]==", sprintf("%.2f", map_full$a1),
+           "*','~a[2]==", sprintf("%.2f", map_full$a2))
   )
   map_full
 }
@@ -94,11 +95,12 @@ a1_map <- GetA1Map(run_prefix, agg, A1_full)
 
 # ---- facet labels ----
 rho_levels  <- sprintf("%.2f", Rho_full)
-rho_labels  <- paste0("rho=", rho_levels)
-
+#rho_labels <- paste0("Corr(A, ", tilde(A), ")=", rho_levels)
+rho_labels  <- paste0("Corr(A,~tilde(A))==", rho_levels)
 # Attach labels to agg
 agg <- merge(agg, a1_map[, c("a1", "a1_label")], by = "a1", all.x = TRUE, sort = FALSE)
-agg$rho_label <- paste0("rho=", sprintf("%.2f", agg$rho_plot))
+#agg$rho_label <- paste0("rho=", sprintf("%.2f", agg$rho_plot))
+agg$rho_label <- paste0("Corr(A,~tilde(A))==", sprintf("%.2f", agg$rho_plot))
 
 agg$a1_facet  <- factor(agg$a1_label, levels = a1_map$a1_label)
 agg$rho_facet <- factor(agg$rho_label, levels = rho_labels)
@@ -154,32 +156,40 @@ BaseTheme <- function() {
     )
 }
 
-XlabExpr <- expression(paste("Share of correlation from V (", rho[V]/rho, ")"))
+XlabExpr <-  expression(pi[V])  
 
-# -------- Figure 1: NCE coef +/- SE --------
+
+# -------- NCE coef +/- SD --------
 p_nce <- ggplot(dat2, aes(x = f, y = beta, color = model, shape = model, group = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model, group = model),
               alpha = 0.18, color = NA, show.legend = FALSE) +
   geom_line(linewidth = 0.9, linetype = 2, na.rm = FALSE) +
   geom_point(size = 1.5, na.rm = TRUE) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
-  facet_grid(a1 ~ rho) +
-  labs(
-    title = "Mean NCE coefficient \u00B1 SE",
+  facet_grid(a1 ~ rho, labeller = labeller(a1 = label_parsed, rho = label_parsed)) +  labs(
+    title = "Mean NCE coefficient \u00B1 SD",
     x = XlabExpr,
     y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
     color = "Model:",
     shape = "Model:"
   ) +
   BaseTheme() +
+  scale_color_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
+  scale_shape_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
-# -------- Figure 2: Power --------
+# -------- Power --------
 p_pow <- ggplot(dat2, aes(x = f, y = power, color = model, shape = model, group = model)) +
   geom_line(linewidth = 0.9, linetype = 2, na.rm = FALSE) +
   geom_point(size = 1.5, na.rm = TRUE) +
   scale_y_continuous(limits = c(0, 1)) +
-  facet_grid(a1 ~ rho) +
+  facet_grid(a1 ~ rho, labeller = labeller(a1 = label_parsed, rho = label_parsed)) +
   labs(
     title = "Power",
     x = XlabExpr,
@@ -188,6 +198,14 @@ p_pow <- ggplot(dat2, aes(x = f, y = power, color = model, shape = model, group 
     shape = "Model:"
   ) +
   BaseTheme() +
+  scale_color_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
+  scale_shape_discrete(labels = c(
+    expression(Y %~% A + tilde(A)),
+    expression(Y %~% A + tilde(A) + V)
+  )) +
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 # ---- draw to device ----
@@ -202,17 +220,17 @@ n_row <- length(levels(dat2$a1))
 width_in  <- max(9, 2.4 * n_col + 3.0)
 height_in <- max(6, 2.0 * n_row + 2.5)
 
-png(file.path(out_dir, paste0(out_stem, "_NCE.png")), width = width_in, height = height_in, units = "in", res = 300)
-print(p_nce)
-dev.off()
+# png(file.path(out_dir, paste0(out_stem, "_NCE.png")), width = width_in, height = height_in, units = "in", res = 300)
+# print(p_nce)
+# dev.off()
 
 pdf(file.path(out_dir, paste0(out_stem, "_NCE.pdf")), width = width_in, height = height_in)
 print(p_nce)
 dev.off()
 
-png(file.path(out_dir, paste0(out_stem, "_Power.png")), width = width_in, height = height_in, units = "in", res = 300)
-print(p_pow)
-dev.off()
+# png(file.path(out_dir, paste0(out_stem, "_Power.png")), width = width_in, height = height_in, units = "in", res = 300)
+# print(p_pow)
+# dev.off()
 
 pdf(file.path(out_dir, paste0(out_stem, "_Power.pdf")), width = width_in, height = height_in)
 print(p_pow)
