@@ -169,7 +169,7 @@ p_nce <- ggplot(dat2, aes(x = f, y = beta, color = model, shape = model, group =
   facet_grid(a1 ~ rho, labeller = labeller(a1 = label_parsed, rho = label_parsed)) +  labs(
     title = "Mean NCE coefficient \u00B1 SD",
     x = XlabExpr,
-    y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
+    y = expression(paste("NCE coefficient")),# (", hat(beta)[tilde(A)], ")")),
     color = "Model:",
     shape = "Model:"
   ) +

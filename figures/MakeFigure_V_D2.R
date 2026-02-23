@@ -81,7 +81,7 @@ p_coef <- ggplot(dat, aes(x = f, y = beta, color = model, shape = model)) +
     title = "(A) Mean NCE coefficient \u00B1 SE",
     x = expression(pi[V]),
     # x = expression(paste("Share of Corr(A, ", tilde(A), ") from V (", pi[V],")")), 
-    y = expression(paste("NCE coefficient (", hat(beta)[tilde(A)], ")")),
+    y = expression(paste("NCE coefficient")),# (", hat(beta)[tilde(A)], ")")),
     color = "Model:",
     shape = "Model:"
   ) +

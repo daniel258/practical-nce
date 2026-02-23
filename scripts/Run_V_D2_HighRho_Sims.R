@@ -4,8 +4,6 @@
 #   - choose a2 as large as possible while keeping a1^2 + a2^2 < 1
 #   - vary f in [0,1], keep only feasible f's (gridmaker drops infeasible rows)
 #   - skip (a1, rho) pairs with empty grids using tryCatch
-#   - ALWAYS save a skip log (even if nothing is feasible)
-
 # -------------------- user inputs --------------------
 n_sample <- 1000
 n_iters  <- 1000

@@ -14,7 +14,6 @@ robust_se  <- FALSE
 
 rho_target_vec <- seq(0.1, 0.9, by = 0.05)
 
-# Set a1*c1 = 0.1 here (no checking inside MakeGrid)
 # Set a1*c1 = 0.1 but with c1/a1 = 0.6 so beta_Atilde crosses ~0 at rho=0.6
 a1 <- sqrt(0.1 / 0.6)
 c1 <- 0.6 * a1       

@@ -31,7 +31,7 @@ b1 <- 0.3
 b2 <- 0.3
 sigma_eY <- 1
 
-# Intercepts (usually 0)
+# Intercepts
 a0 <- 0
 c0 <- 0
 
