@@ -38,14 +38,14 @@ GetLegendGrob <- function(p) {
 p_bias <- ggplot(agg, aes(x = a1, y = bias_A_fit1, group = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "(A) Bias in Exposure Effect", x = NULL, y = "Bias", color = "black") +
+  labs(title = "(A) Bias in Exposure Effect", x = expression(a[1]), y = "Bias", color = "black") +
   BaseTheme() + 
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
 p_coef <- ggplot(agg, aes(x = a1, y = beta_Atilde_fit2, color = c1_f)) +
   geom_line(linewidth = 0.8, linetype = 2) +
   geom_point(size = 1.6) +
-  labs(title = "(B) NCE Coefficient", x = NULL, y = "NCE Coefficient", color = expression(c[1])) +
+  labs(title = "(B) NCE Coefficient", x = expression(a[1]), y = "NCE Coefficient", color = expression(c[1])) +
   BaseTheme(legend_pos = "bottom") + 
   scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
 
