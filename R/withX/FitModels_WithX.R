@@ -1,6 +1,6 @@
 # FitModels_WithX.R
 # Fit working regressions and extract SEs + (empirical) power indicators (reject at alpha).
-# Extension: include measured covariates Xc and Xb in ALL fitted models.
+# Extension: include measured covariates X1 and X2 in all fitted models.
 #
 # - Fit 1: Y ~ A + X1 + X2
 # - Fit 2: Y ~ A + Atilde + X1 + X2
@@ -13,7 +13,7 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
 
   if (intercept) {
     f1 <- Y ~ A + X1 + X2
-    f2 <- Y ~ A + Atilde + Xc + X2
+    f2 <- Y ~ A + Atilde + X1 + X2
     f3 <- Y ~ A + V + X1 + X2
     f4 <- Y ~ A + Atilde + V + X1 + X2
   } else {

@@ -1,0 +1,70 @@
+List of 26
+ $ created_at     : chr "2026-03-03 13:57:16.191017"
+ $ script         : chr "Run_V_D1_Sims_WithX.R"
+ $ save_prefix    : chr "results/withX/withV/D1/withV_D1_withX_norm_n1000_it1000_seed314_20260303_135617"
+ $ n_sample       : num 1000
+ $ n_iters        : num 1000
+ $ seed           : num 314
+ $ noise_dist     : chr "norm"
+ $ df_t           : num 5
+ $ alpha          : num 0.05
+ $ robust_se      : logi FALSE
+ $ rho_target_vec : num [1:17] 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 ...
+ $ a1             : num 0.408
+ $ c1             : num 0.245
+ $ b0             : num 0
+ $ b1             : num 0.3
+ $ b2             : num 0.3
+ $ sigma_eY       : num 1
+ $ ax_1           : num 0.15
+ $ ax_2           : num 0.15
+ $ bx_1           : num 0.2
+ $ bx_2           : num 0.2
+ $ p_x2           : num 0.5
+ $ grid_dim       : int [1:2] 16 27
+ $ grid_preview   :'data.frame':	10 obs. of  27 variables:
+  ..$ design        : chr [1:10] "D1_WithX" "D1_WithX" "D1_WithX" "D1_WithX" ...
+  ..$ rho_target    : num [1:10] 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55
+  ..$ a1            : num [1:10] 0.408 0.408 0.408 0.408 0.408 ...
+  ..$ a2            : num [1:10] 3.73e-09 2.24e-01 3.16e-01 3.87e-01 4.47e-01 ...
+  ..$ c1            : num [1:10] 0.245 0.245 0.245 0.245 0.245 ...
+  ..$ c2            : num [1:10] 3.73e-09 2.24e-01 3.16e-01 3.87e-01 4.47e-01 ...
+  ..$ b0            : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ b1            : num [1:10] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+  ..$ b2            : num [1:10] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+  ..$ a0            : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ c0            : num [1:10] 0 0 0 0 0 0 0 0 0 0
+  ..$ sigma_eY      : num [1:10] 1 1 1 1 1 1 1 1 1 1
+  ..$ ax_1          : num [1:10] 0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15
+  ..$ ax_2          : num [1:10] 0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15 0.15
+  ..$ bx_1          : num [1:10] 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2
+  ..$ bx_2          : num [1:10] 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2 0.2
+  ..$ p_x2          : num [1:10] 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5
+  ..$ rho_U         : num [1:10] 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1
+  ..$ rho_V         : num [1:10] 1.39e-17 5.00e-02 1.00e-01 1.50e-01 2.00e-01 ...
+  ..$ rho_total     : num [1:10] 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55
+  ..$ rho_rel_U     : num [1:10] 1 0.667 0.5 0.4 0.333 ...
+  ..$ bias_struct   : num [1:10] 0.122 0.122 0.122 0.122 0.122 ...
+  ..$ var_A_given_X : num [1:10] 0.955 0.955 0.955 0.955 0.955 0.955 0.955 0.955 0.955 0.955
+  ..$ bias_fit1_pop : num [1:10] 0.128 0.128 0.128 0.128 0.128 ...
+  ..$ var_A_given_XV: num [1:10] 0.955 0.905 0.855 0.805 0.755 0.705 0.655 0.605 0.555 0.505
+  ..$ bias_fit3_pop : num [1:10] 0.128 0.135 0.143 0.152 0.162 ...
+  ..$ f_target      : num [1:10] 1.39e-16 3.33e-01 5.00e-01 6.00e-01 6.67e-01 ...
+ $ session_info   :List of 14
+  ..$ R.version  :List of 14
+  ..$ platform   : chr "aarch64-apple-darwin20"
+  ..$ locale     : chr "en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8"
+  ..$ tzone      : chr "America/New_York"
+  ..$ tzcode_type: chr "internal"
+  ..$ running    : chr "macOS Tahoe 26.0.1"
+  ..$ RNGkind    : chr [1:3] "Mersenne-Twister" "Inversion" "Rejection"
+  ..$ basePkgs   : chr [1:7] "stats" "graphics" "grDevices" "utils" ...
+  ..$ otherPkgs  :List of 1
+  ..$ loadedOnly :List of 24
+  ..$ matprod    : chr "default"
+  ..$ BLAS       : chr "/System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib"
+  ..$ LAPACK     : chr "/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib"
+  ..$ LA_version : chr "3.12.1"
+  ..- attr(*, "class")= chr "sessionInfo"
+ $ runtime_minutes: Named num 0.985
+  ..- attr(*, "names")= chr "elapsed"

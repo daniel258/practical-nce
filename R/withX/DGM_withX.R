@@ -66,8 +66,7 @@ DGM_WithX <- function(n_sample, pars, noise_dist = c("norm", "t"), df = 5) {
   ax_1 <- pars$ax_1; ax_2 <- pars$ax_2
   bx_1 <- pars$bx_1; bx_2 <- pars$bx_2
   p_x2 <- pars$p_x2
-  if (is.null(p_xb)) p_xb <- 0.5
-  
+
   sd_resids <- CalcResidSD_WithX(a1, a2, c1, c2, ax_1, ax_2)
   sigma_eA  <- sd_resids[1]
   sigma_eAt <- sd_resids[2]
@@ -80,8 +79,8 @@ DGM_WithX <- function(n_sample, pars, noise_dist = c("norm", "t"), df = 5) {
   # latent + measured drivers
   U  <- rnorm(n_sample)
   V  <- rnorm(n_sample)
-  Xc <- rnorm(n_sample)
-  Xb <- GenBernStd(n_sample, p = p_xb)
+  X1 <- rnorm(n_sample)
+  X2 <- GenBernStd(n_sample, p = p_x2)
   
   A      <- a0 + a1 * U + a2 * V + ax_1 * X1 + ax_2 * X2 + eA
   Atilde <- c0 + c1 * U + c2 * V + eAt
