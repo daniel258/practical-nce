@@ -4,7 +4,7 @@
 #   (B) power for H0: beta_Atilde = 0
 # Shown for Model 2 (Y~A+Atilde) and Model 4 (Y~A+Atilde+V)
 
-# ---- YOU EDIT THIS ----
+# ---- file prefix name ----
 run_prefix <- "results/withV/D1/withV_D1_norm_n1000_it1000_seed314_20260216_081732"
 # reads: paste0(run_prefix, "_agg.csv")
 

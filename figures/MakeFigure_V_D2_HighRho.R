@@ -10,7 +10,7 @@
 #   This script reconstructs the *full* intended f grid (from the manifest
 #   when available) and inserts NA rows so lines/ribbons break where infeasible.
 
-# ---- YOU EDIT THIS ----
+# ---- file prefix name ----
 run_prefix <- "results/withV/D2/withV_D2_highRho_unequalA2_norm_n1000_it1000_seed314_20260216_110119"
 
 out_dir  <- "figures"

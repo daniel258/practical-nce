@@ -5,7 +5,7 @@
 # Facets: rows = a1, cols = rho_total
 # Handles infeasible f by inserting NA rows so lines/ribbons break.
 
-# ---- YOU EDIT THIS ----
+# ---- file prefix name ----
 run_prefix <- "results/withV/D2/withV_D2_varyA1Rho_norm_n1000_it1000_seed314_20260216_083334"
 out_dir    <- "figures"
 out_stem   <- "Fig_D2_varyA1Rho"
