@@ -12,7 +12,7 @@ n_iters  <- 1000
 seed     <- 314
 
 noise_dist <- "norm"   # "norm" or "t"
-df_t       <- 5
+df_t       <- 3
 alpha      <- 0.05
 robust_se  <- FALSE
 
