@@ -1,6 +1,6 @@
 # MakeFigure_V_D2_VaryA1Rho.R
 # Creates two figures (separate files):
-#   1) Mean NCE coefficient +/- mean SE
+#   1) Mean NCE coefficient +/- SD
 #   2) Power
 # Facets: rows = a1, cols = rho_total
 # Handles infeasible f by inserting NA rows so lines/ribbons break.
@@ -109,7 +109,7 @@ BaseTheme <- function() {
 # )
 XlabExpr <-  expression(pi[V])  
 
-# -------- NCE coef +/- SE --------
+# -------- NCE coef +/- SD --------
 p_nce <- ggplot(dat2, aes(x = f, y = beta, color = model, shape = model, group = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model, group = model),
               alpha = 0.18, color = NA, show.legend = FALSE) +

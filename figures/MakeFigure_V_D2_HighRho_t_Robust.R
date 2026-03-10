@@ -1,7 +1,7 @@
 # MakeFigure_V_D2_HighRho.R
 # Design D2 (high rho_total), faceted by a1 (rows) and rho_total (cols).
 # Outputs two files:
-#   1) Mean NCE coefficient +/-  SD
+#   1) Mean NCE coefficient +/- SD
 #   2) Power (reject proportion) for H0: beta_Atilde = 0
 # Both shown for Model 2 (Y~A+Atilde) and Model 4 (Y~A+Atilde+V)
 #

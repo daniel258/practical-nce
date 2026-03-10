@@ -1,6 +1,6 @@
 # MakeFigure_V_D2.R
 # Two-panel figure for Design D2 (vary f in [0,1]):
-#   (A) mean NCE coefficient +/- mean model-based SE
+#   (A) mean NCE coefficient +/-  SD
 #   (B) power for H0: beta_Atilde = 0
 # Shown for Model 2 (Y~A+Atilde) and Model 4 (Y~A+Atilde+V)
 
@@ -71,14 +71,14 @@ GetLegendGrob <- function(p) {
   g$grobs[[idx[1]]]
 }
 
-# ---- panel (A): mean coef +/- mean SE (not a CI band) ----
+# ---- panel (A): mean coef +/- mean SD (not a CI band) ----
 p_coef <- ggplot(dat, aes(x = f, y = beta, color = model, shape = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model), alpha = 0.18, color = NA, show.legend = FALSE) +
   geom_line(linewidth = 0.9, linetype = 2) +
   geom_point(size = 1.6) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
   labs(
-    title = "(A) Mean NCE coefficient \u00B1 SE",
+    title = "(A) Mean NCE coefficient \u00B1 SD",
     x = expression(pi[V]),
     # x = expression(paste("Share of Corr(A, ", tilde(A), ") from V (", pi[V],")")), 
     y = expression(paste("NCE coefficient")),# (", hat(beta)[tilde(A)], ")")),

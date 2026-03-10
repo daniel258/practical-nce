@@ -1,6 +1,6 @@
 # MakeFigure_V_D2_VaryA1Rho.R
 # Creates two figures (separate files):
-#   1) Mean NCE coefficient +/- mean SE
+#   1) Mean NCE coefficient +/- SD
 #   2) Power
 # Facets: rows = a1, cols = rho_total
 # Handles infeasible f by inserting NA rows so lines/ribbons break.
