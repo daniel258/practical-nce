@@ -1,5 +1,5 @@
 # Run_NoV_Sims.R
-# Run simulations for the "no V affects A/Atilde" case by setting a2=c2=0.
+# Run simulations for Design0 by setting a2=c2=0.
 
 # -------------------- user inputs --------------------
 
@@ -12,7 +12,7 @@ df_t       <- 3
 alpha      <- 0.05
 robust_se  <- FALSE
 
-# Grid choices (noV grid varies a1 and c1)
+# Grid choices (Design 0 grid varies a1 and c1)
 a1_vec <- seq(0.05, 0.95, by = 0.05)
 c1_vec <- c(0.1, 0.3, 0.5, 0.7, 0.9)
 
@@ -22,8 +22,8 @@ b2 <- 0.3
 sigma_eY <- 1
 
 # Output folder + prefix
-out_dir <- "results/noV"
-design_label <- "NoV"
+out_dir <- "results/Design0"
+design_label <- "Design0"
 
 # -------------------- load project code --------------------
 source("R/DGM.R")
@@ -38,9 +38,9 @@ stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
 tag <- sprintf("noV_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
 save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
-# ---- build NO-V grid  ----
-#  MakeGrid_NoV() hard-sets a2=0 and c2=0.
-grid <- MakeGrid_NoV(
+# ---- build Design0 grid  ----
+#  MakeGrid_D0() hard-sets a2=0 and c2=0.
+grid <- MakeGrid_D0(
   a1 = a1_vec,
   c1 = c1_vec,
   b1 = b1,
@@ -71,7 +71,7 @@ message(sprintf("Total runtime: %.1f seconds (%.2f minutes)", elapsed_sec, elaps
 # -------------------- manifest --------------------
 manifest <- list(
   created_at = as.character(Sys.time()),
-  script = "Run_NoV_Sims.R",
+  script = "Run_D0_Sims.R",
   save_prefix = save_prefix,
   n_sample = n_sample,
   n_iters = n_iters,
