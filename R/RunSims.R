@@ -40,17 +40,17 @@ RunSims <- function(grid,
     # fit1: Y ~ A
     "beta_A_fit1","se_A_fit1","p_A_fit1","power_A_fit1",
     
-    # fit2: Y ~ A + Atilde
+    # fit2: Y ~ A + N
     "beta_A_fit2","se_A_fit2","p_A_fit2","power_A_fit2",
-    "beta_Atilde_fit2","se_Atilde_fit2","p_Atilde_fit2","power_Atilde_fit2",
+    "beta_N_fit2","se_N_fit2","p_N_fit2","power_N_fit2",
     
     # fit3: Y ~ A + V
     "beta_A_fit3","se_A_fit3","p_A_fit3","power_A_fit3",
     "beta_V_fit3","se_V_fit3","p_V_fit3","power_V_fit3",
     
-    # fit4: Y ~ A + Atilde + V
+    # fit4: Y ~ A + N + V
     "beta_A_fit4","se_A_fit4","p_A_fit4","power_A_fit4",
-    "beta_Atilde_fit4","se_Atilde_fit4","p_Atilde_fit4","power_Atilde_fit4",
+    "beta_N_fit4","se_N_fit4","p_N_fit4","power_N_fit4",
     "beta_V_fit4","se_V_fit4","p_V_fit4","power_V_fit4"
   )
   
@@ -82,19 +82,19 @@ RunSims <- function(grid,
   mean_cols <- c(
     "beta_A_fit1","se_A_fit1","power_A_fit1",
     "beta_A_fit2","se_A_fit2","power_A_fit2",
-    "beta_Atilde_fit2","se_Atilde_fit2","power_Atilde_fit2",
+    "beta_N_fit2","se_N_fit2","power_N_fit2",
     
     "beta_A_fit3","se_A_fit3","power_A_fit3",
     "beta_V_fit3","se_V_fit3","power_V_fit3",
     
     "beta_A_fit4","se_A_fit4","power_A_fit4",
-    "beta_Atilde_fit4","se_Atilde_fit4","power_Atilde_fit4",
+    "beta_N_fit4","se_N_fit4","power_N_fit4",
     "beta_V_fit4","se_V_fit4","power_V_fit4"
   )
   
-  sd_cols <- c("beta_A_fit1","beta_A_fit2","beta_Atilde_fit2",
+  sd_cols <- c("beta_A_fit1","beta_A_fit2","beta_N_fit2",
                "beta_A_fit3","beta_V_fit3",
-               "beta_A_fit4","beta_Atilde_fit4","beta_V_fit4")
+               "beta_A_fit4","beta_N_fit4","beta_V_fit4")
   
   id_cols <- names(grid)
   
@@ -109,11 +109,11 @@ RunSims <- function(grid,
   
   names(agg_sd)[names(agg_sd) == "beta_A_fit1"]      <- "sd_beta_A_fit1"
   names(agg_sd)[names(agg_sd) == "beta_A_fit2"]      <- "sd_beta_A_fit2"
-  names(agg_sd)[names(agg_sd) == "beta_Atilde_fit2"] <- "sd_beta_Atilde_fit2"
+  names(agg_sd)[names(agg_sd) == "beta_N_fit2"] <- "sd_beta_N_fit2"
   names(agg_sd)[names(agg_sd) == "beta_A_fit3"]      <- "sd_beta_A_fit3"
   names(agg_sd)[names(agg_sd) == "beta_V_fit3"]      <- "sd_beta_V_fit3"
   names(agg_sd)[names(agg_sd) == "beta_A_fit4"]      <- "sd_beta_A_fit4"
-  names(agg_sd)[names(agg_sd) == "beta_Atilde_fit4"] <- "sd_beta_Atilde_fit4"
+  names(agg_sd)[names(agg_sd) == "beta_N_fit4"] <- "sd_beta_N_fit4"
   names(agg_sd)[names(agg_sd) == "beta_V_fit4"]      <- "sd_beta_V_fit4"
   
   agg <- merge(agg_mean, agg_sd, by = id_cols, all.x = TRUE)

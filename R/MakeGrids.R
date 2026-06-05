@@ -1,27 +1,27 @@
 # MakeGrids.R
 # Grid builders for Practical Considerations NCE simulations
 #
-#   A      = a0 + a1*U + a2*V + eA
-#   Atilde = c0 + c1*U + c2*V + eAt
-#   Y      = b0 + b1*U + b2*A + eY
+#   A = a0 + a1*U + a2*V + eA
+#   N = c0 + c1*U + c2*V + eN
+#   Y = b0 + b1*U + b2*A + eY
 #
-# Var(A)=Var(Atilde)=1 enforced in DGM.R by choosing Var(eA), Var(eAt).
+# Var(A)=Var(N)=1 enforced in DGM.R by choosing Var(eA), Var(eN).
 # Therefore must have a1^2 + a2^2 < 1 and c1^2 + c2^2 < 1.
 
 # ---- internal helpers ----
 
 AssertParsFeasible <- function(a1, a2, c1, c2, tol = 1e-12) {
-  vA  <- 1 - (a1^2 + a2^2)
-  vAt <- 1 - (c1^2 + c2^2)
-  if (any(vA <= tol) || any(vAt <= tol)) {
+  v_A  <- 1 - (a1^2 + a2^2)
+  v_N <- 1 - (c1^2 + c2^2)
+  if (any(v_A <= tol) || any(v_N <= tol)) {
     stop("Infeasible parameters: need a1^2+a2^2 < 1 and c1^2+c2^2 < 1")
   }
   invisible(TRUE)
 }
 
 AddDerivedCols <- function(grid) {
-  # With independent U,V and Var(A)=Var(Atilde)=1:
-  # corr(A, Atilde) = Cov(A, Atilde) = a1*c1 + a2*c2
+  # With independent U,V and Var(A)=Var(N)=1:
+  # corr(A, N) = Cov(A, N) = a1*c1 + a2*c2
   grid$rho_U     <- with(grid, a1 * c1)
   grid$rho_V     <- with(grid, a2 * c2)
   grid$rho_total <- with(grid, rho_U + rho_V)
@@ -47,9 +47,9 @@ FinalizeGrid <- function(grid,
   grid
 }
 
-# ---- basic (no V) ----
+# ---- Design 0 (no V) ----
 
-MakeGrid_NoV <- function(a1, c1, b1, b2,
+MakeGrid_D0 <- function(a1, c1, b1, b2,
                          a0 = 0, b0 = 0, c0 = 0,
                          sigma_eY = 1,
                          add_derived = TRUE) {
@@ -60,9 +60,9 @@ MakeGrid_NoV <- function(a1, c1, b1, b2,
 }
 
 # ---- Design 1 ----
-# Fix bias and fix U->A (a1) and U->Atilde (c1). 
-# rho_U = a1*c1, then vary rho_total via rho_V = a2*c2 by varying  V->A and V->Atilde with constraint a2=c2, chosen to hit rho(A,Atilde)=rho_target.
-# Interpretation: corr(A, Atilde) increases via V.
+# Fix bias and fix U->A (a1) and U->N (c1). 
+# rho_U = a1*c1, then vary rho_total via rho_V = a2*c2 by varying  V->A and V->N with constraint a2=c2, chosen to hit rho(A,N)=rho_target.
+# Interpretation: corr(A, N) increases via V.
 
 MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
                                    a1, c1,
@@ -126,8 +126,8 @@ MakeGrid_D1_FixU_VaryV <- function(rho_target_vec,
 
 # ---- Design 2  ----
 #   - Fix bias in the naive exposure model Y ~ A by holding a1 fixed (bias = b1 * a1).
-#   - Fix total corr(A, Atilde) = rho_total.
-#   - Vary f = rho_V / rho_total, i.e., the share of corr(A, Atilde) attributable to V.
+#   - Fix total corr(A, N) = rho_total.
+#   - Vary f = rho_V / rho_total, i.e., the share of corr(A, N) attributable to V.
 #
 # Construction:
 #   rho_total is fixed.
