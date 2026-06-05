@@ -1,4 +1,4 @@
-# Run_V_D2_HighRho_Sims.R
+# Run_D2_HighRho_Sims.R
 # Design D2, but for high rho_total (0.70--0.95):
 #   - keep a1 moderate (controls confounding/bias magnitude via b1*a1)
 #   - choose a2 as large as possible while keeping a1^2 + a2^2 < 1
@@ -38,7 +38,7 @@ c0 <- 0
 a2_margin <- 0.03
 a2_cap    <- 0.97
 
-out_dir <- "results/withV/D2"
+out_dir <- "results/D2"
 design_label <- "D2_highRho_unequalA2"
 # -----------------------------------------------------
 
@@ -52,7 +52,7 @@ source("R/RunSims.R")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-tag <- sprintf("withV_D2_highRho_unequalA2_%s_n%d_it%d_seed%d",
+tag <- sprintf("D2_highRho_unequalA2_%s_n%d_it%d_seed%d",
                noise_dist, n_sample, n_iters, seed)
 save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 # -----------------------------------------------------------------------------------------------
@@ -158,13 +158,13 @@ res <- RunSims(
 )
 
 elapsed_sec <- as.numeric((proc.time() - t0)["elapsed"])
-message(sprintf("[Run_V_D2_HighRho_Sims] Total runtime: %.1f sec (%.2f min)",
+message(sprintf("[Run_D2_HighRho_Sims] Total runtime: %.1f sec (%.2f min)",
                 elapsed_sec, elapsed_sec / 60))
 
 # -------------------- manifest + skipped combos --------------------
 manifest <- list(
   created_at      = as.character(Sys.time()),
-  script          = "Run_V_D2_HighRho_Sims.R",
+  script          = "Run_D2_HighRho_Sims.R",
   design_label    = design_label,
   save_prefix     = save_prefix,
   n_sample        = n_sample,

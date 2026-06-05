@@ -22,8 +22,8 @@ b2 <- 0.3
 sigma_eY <- 1
 
 # Output folder + prefix
-out_dir <- "results/Design0"
-design_label <- "Design0"
+out_dir <- "results/D0"
+design_label <- "D0"
 
 # -------------------- load project code --------------------
 source("R/DGM.R")
@@ -35,7 +35,7 @@ source("R/RunSims.R")
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 stamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
-tag <- sprintf("noV_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
+tag <- sprintf("D0_%s_n%d_it%d_seed%d", noise_dist, n_sample, n_iters, seed)
 save_prefix <- file.path(out_dir, paste0(tag, "_", stamp))
 
 # ---- build Design0 grid  ----
