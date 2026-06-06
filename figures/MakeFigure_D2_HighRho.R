@@ -163,7 +163,7 @@ XlabExpr <-  expression(pi[V])
 p_nce <- ggplot(dat2, aes(x = f, y = beta, color = model, shape = model, group = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model, group = model),
               alpha = 0.18, color = NA, show.legend = FALSE) +
-  geom_line(linewidth = 0.9, linetype = 2, na.rm = FALSE) +
+  geom_line(linewidth = 0.9, na.rm = FALSE) +
   geom_point(size = 1.5, na.rm = TRUE) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
   facet_grid(a1 ~ rho, labeller = labeller(a1 = label_parsed, rho = label_parsed)) +  labs(
@@ -186,7 +186,7 @@ p_nce <- ggplot(dat2, aes(x = f, y = beta, color = model, shape = model, group =
 
 # -------- Power --------
 p_pow <- ggplot(dat2, aes(x = f, y = power, color = model, shape = model, group = model)) +
-  geom_line(linewidth = 0.9, linetype = 2, na.rm = FALSE) +
+  geom_line(linewidth = 0.9,  na.rm = FALSE) +
   geom_point(size = 1.5, na.rm = TRUE) +
   scale_y_continuous(limits = c(0, 1)) +
   facet_grid(a1 ~ rho, labeller = labeller(a1 = label_parsed, rho = label_parsed)) +

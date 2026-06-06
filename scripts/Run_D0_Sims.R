@@ -1,5 +1,5 @@
 # Run_NoV_Sims.R
-# Run simulations for Design0 by setting a2=c2=0.
+# Run simulations for Design 0 by setting a2=c2=0.
 
 # -------------------- user inputs --------------------
 
