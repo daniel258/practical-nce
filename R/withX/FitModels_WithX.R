@@ -3,9 +3,9 @@
 # Extension: include measured covariates X1 and X2 in all fitted models.
 #
 # - Fit 1: Y ~ A + X1 + X2
-# - Fit 2: Y ~ A + Atilde + X1 + X2
+# - Fit 2: Y ~ A + N + X1 + X2
 # - Fit 3: Y ~ A + V + X1 + X2
-# - Fit 4: Y ~ A + Atilde + V + X1 + X1
+# - Fit 4: Y ~ A + N + V + X1 + X1
 #
 # Robust SEs use sandwich::vcovHC (HC1).
 
@@ -13,14 +13,14 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
 
   if (intercept) {
     f1 <- Y ~ A + X1 + X2
-    f2 <- Y ~ A + Atilde + X1 + X2
+    f2 <- Y ~ A + N + X1 + X2
     f3 <- Y ~ A + V + X1 + X2
-    f4 <- Y ~ A + Atilde + V + X1 + X2
+    f4 <- Y ~ A + N + V + X1 + X2
   } else {
     f1 <- Y ~ A + X1 + X2 - 1
-    f2 <- Y ~ A + Atilde + X1 + X2 - 1
+    f2 <- Y ~ A + N + X1 + X2 - 1
     f3 <- Y ~ A + V + X1 + X2 - 1
-    f4 <- Y ~ A + Atilde + V + X1 + X2 - 1
+    f4 <- Y ~ A + N + V + X1 + X2 - 1
   }
 
   fit1 <- lm(f1, data = dat)
@@ -31,11 +31,11 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
   # point estimates
   beta_A_fit1      <- unname(coef(fit1)["A"])
   beta_A_fit2      <- unname(coef(fit2)["A"])
-  beta_Atilde_fit2 <- unname(coef(fit2)["Atilde"])
+  beta_N_fit2 <- unname(coef(fit2)["N"])
   beta_A_fit3      <- unname(coef(fit3)["A"])
   beta_V_fit3      <- unname(coef(fit3)["V"])
   beta_A_fit4      <- unname(coef(fit4)["A"])
-  beta_Atilde_fit4 <- unname(coef(fit4)["Atilde"])
+  beta_N_fit4 <- unname(coef(fit4)["N"])
   beta_V_fit4      <- unname(coef(fit4)["V"])
 
   if (!robust_se) {
@@ -53,9 +53,9 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
     t_A_fit2  <- unname(s2["A", "t value"])
     p_A_fit2  <- unname(s2["A", "Pr(>|t|)"])
 
-    se_Atilde_fit2 <- unname(s2["Atilde", "Std. Error"])
-    t_Atilde_fit2  <- unname(s2["Atilde", "t value"])
-    p_Atilde_fit2  <- unname(s2["Atilde", "Pr(>|t|)"])
+    se_N_fit2 <- unname(s2["N", "Std. Error"])
+    t_N_fit2  <- unname(s2["N", "t value"])
+    p_N_fit2  <- unname(s2["N", "Pr(>|t|)"])
 
     se_A_fit3 <- unname(s3["A", "Std. Error"])
     p_A_fit3  <- unname(s3["A", "Pr(>|t|)"])
@@ -64,8 +64,8 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
 
     se_A_fit4 <- unname(s4["A", "Std. Error"])
     p_A_fit4  <- unname(s4["A", "Pr(>|t|)"])
-    se_Atilde_fit4 <- unname(s4["Atilde", "Std. Error"])
-    p_Atilde_fit4  <- unname(s4["Atilde", "Pr(>|t|)"])
+    se_N_fit4 <- unname(s4["N", "Std. Error"])
+    p_N_fit4  <- unname(s4["N", "Pr(>|t|)"])
     se_V_fit4 <- unname(s4["V", "Std. Error"])
     p_V_fit4  <- unname(s4["V", "Pr(>|t|)"])
 
@@ -88,8 +88,8 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
     df2 <- fit2$df.residual
     p_A_fit2  <- 2 * pt(abs(beta_A_fit2 / se_A_fit2), df = df2, lower.tail = FALSE)
 
-    se_Atilde_fit2 <- sqrt(Vcov2["Atilde", "Atilde"])
-    p_Atilde_fit2  <- 2 * pt(abs(beta_Atilde_fit2 / se_Atilde_fit2), df = df2, lower.tail = FALSE)
+    se_N_fit2 <- sqrt(Vcov2["N", "N"])
+    p_N_fit2  <- 2 * pt(abs(beta_N_fit2 / se_N_fit2), df = df2, lower.tail = FALSE)
 
     se_A_fit3 <- sqrt(Vcov3["A", "A"])
     df3 <- fit3$df.residual
@@ -100,8 +100,8 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
     se_A_fit4 <- sqrt(Vcov4["A", "A"])
     df4 <- fit4$df.residual
     p_A_fit4  <- 2 * pt(abs(beta_A_fit4 / se_A_fit4), df = df4, lower.tail = FALSE)
-    se_Atilde_fit4 <- sqrt(Vcov4["Atilde", "Atilde"])
-    p_Atilde_fit4  <- 2 * pt(abs(beta_Atilde_fit4 / se_Atilde_fit4), df = df4, lower.tail = FALSE)
+    se_N_fit4 <- sqrt(Vcov4["N", "N"])
+    p_N_fit4  <- 2 * pt(abs(beta_N_fit4 / se_N_fit4), df = df4, lower.tail = FALSE)
     se_V_fit4 <- sqrt(Vcov4["V", "V"])
     p_V_fit4  <- 2 * pt(abs(beta_V_fit4 / se_V_fit4), df = df4, lower.tail = FALSE)
   }
@@ -117,10 +117,10 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
     p_A_fit2          = p_A_fit2,
     power_A_fit2      = as.numeric(p_A_fit2 < alpha),
 
-    beta_Atilde_fit2  = beta_Atilde_fit2,
-    se_Atilde_fit2    = se_Atilde_fit2,
-    p_Atilde_fit2     = p_Atilde_fit2,
-    power_Atilde_fit2 = as.numeric(p_Atilde_fit2 < alpha),
+    beta_N_fit2  = beta_N_fit2,
+    se_N_fit2    = se_N_fit2,
+    p_N_fit2     = p_N_fit2,
+    power_N_fit2 = as.numeric(p_N_fit2 < alpha),
 
     beta_A_fit3      = beta_A_fit3,
     se_A_fit3        = se_A_fit3,
@@ -137,10 +137,10 @@ FitModels_WithX <- function(dat, alpha = 0.05, intercept = TRUE, robust_se = FAL
     p_A_fit4         = p_A_fit4,
     power_A_fit4     = as.numeric(p_A_fit4 < alpha),
 
-    beta_Atilde_fit4  = beta_Atilde_fit4,
-    se_Atilde_fit4    = se_Atilde_fit4,
-    p_Atilde_fit4     = p_Atilde_fit4,
-    power_Atilde_fit4 = as.numeric(p_Atilde_fit4 < alpha),
+    beta_N_fit4  = beta_N_fit4,
+    se_N_fit4    = se_N_fit4,
+    p_N_fit4     = p_N_fit4,
+    power_N_fit4 = as.numeric(p_N_fit4 < alpha),
 
     beta_V_fit4      = beta_V_fit4,
     se_V_fit4        = se_V_fit4,

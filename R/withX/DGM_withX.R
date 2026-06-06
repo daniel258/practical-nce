@@ -3,15 +3,15 @@
 # Extension: two measured confounders X1 (continuous) and X2 (scaled binary),
 # and include them in the outcome and exposure models. 
 #   - X affects A and Y (confounding that is controlled by adjustment)
-#   - X does not affect Atilde (so Corr(A, Atilde) is still driven by U and V only)
+#   - X does not affect N (so Corr(A, N) is still driven by U and V only)
 #
 #  DGM
 #   U ~ N(0,1),  V ~ N(0,1), independent
 #   A      = a0 + a1*U + a2*V + ax_1*X1 + ax_2*X2 + eA
 #   Y      = b0 + b1*U + b2*A + bx_1*X1 + bx_2*X2 + eY
-#   Atilde = c0 + c1*U + c2*V + eAt
+#   N = c0 + c1*U + c2*V + eN
 #
-# Var(eA) and Var(eAt) are chosen so that Var(A)=Var(Atilde)=1.
+# Var(eA) and Var(eN) are chosen so that Var(A)=Var(N)=1.
 # Because X enters A, feasibility requires:
 #   a1^2 + a2^2 + ax_1^2 + ax_2^2 < 1  and  c1^2 + c2^2 < 1
 
@@ -25,14 +25,14 @@ GenBernStd <- function(n_sample, p = 0.5) {
 # Compute residual SD to enforce Var=1
 CalcResidSD_WithX <- function(a1, a2, c1, c2, ax_1, ax_2) {
   v_eA  <- 1 - (a1^2 + a2^2 + ax_1^2 + ax_2^2)
-  v_eAt <- 1 - (c1^2 + c2^2)
-  if (v_eA <= 0 | v_eAt <= 0) {
+  v_eN <- 1 - (c1^2 + c2^2)
+  if (v_eA <= 0 | v_eN <= 0) {
     stop(sprintf(
-      "Residual variances must be positive. Computed Var(eA)=%.6f and Var(eAt)=%.6f.",
-      v_eA, v_eAt
+      "Residual variances must be positive. Computed Var(eA)=%.6f and Var(eN)=%.6f.",
+      v_eA, v_eN
     ))
   }
-  c(sqrt(v_eA), sqrt(v_eAt))
+  c(sqrt(v_eA), sqrt(v_eN))
 }
 
 # Sample mean-zero noise with chosen variance, optionally heavy tails
@@ -69,11 +69,11 @@ DGM_WithX <- function(n_sample, pars, noise_dist = c("norm", "t"), df = 5) {
 
   sd_resids <- CalcResidSD_WithX(a1, a2, c1, c2, ax_1, ax_2)
   sigma_eA  <- sd_resids[1]
-  sigma_eAt <- sd_resids[2]
+  sigma_eN <- sd_resids[2]
   
   # noises
   eA  <- rnoise(n_sample, dist = noise_dist, df = df, sigma = sigma_eA)
-  eAt <- rnoise(n_sample, dist = noise_dist, df = df, sigma = sigma_eAt)
+  eN <- rnoise(n_sample, dist = noise_dist, df = df, sigma = sigma_eN)
   eY  <- rnoise(n_sample, dist = noise_dist, df = df, sigma = sigma_eY)
   
   # latent + measured drivers
@@ -82,9 +82,9 @@ DGM_WithX <- function(n_sample, pars, noise_dist = c("norm", "t"), df = 5) {
   X1 <- rnorm(n_sample)
   X2 <- GenBernStd(n_sample, p = p_x2)
   
-  A      <- a0 + a1 * U + a2 * V + ax_1 * X1 + ax_2 * X2 + eA
-  Atilde <- c0 + c1 * U + c2 * V + eAt
-  Y      <- b0 + b1 * U + b2 * A + bx_1 * X1 + bx_2 * X2 + eY
+  A <- a0 + a1 * U + a2 * V + ax_1 * X1 + ax_2 * X2 + eA
+  N <- c0 + c1 * U + c2 * V + eN
+  Y <- b0 + b1 * U + b2 * A + bx_1 * X1 + bx_2 * X2 + eY
   
-  data.frame(Y = Y, A = A, Atilde = Atilde, U = U, V = V, X1 = X1, X2 = X2)
+  data.frame(Y = Y, A = A, N = N, U = U, V = V, X1 = X1, X2 = X2)
 }

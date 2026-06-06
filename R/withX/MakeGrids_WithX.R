@@ -1,12 +1,12 @@
 # MakeGrids_WithX.R
 # Grid builders for Practical Considerations NCE simulations (With measured covariates).
 #
-#  corr(A, Atilde) remains:
-#   rho_total = a1*c1 + a2*c2   (since Var(A)=Var(Atilde)=1 and drivers independent)
+#  corr(A, N) remains:
+#   rho_total = a1*c1 + a2*c2   (since Var(A)=Var(N)=1 and drivers independent)
 #
 #  feasibility for Var(A)=1 now requires:
 #   a1^2 + a2^2 + ax_1^2 + ax_2^2 < 1
-# while Atilde feasibility is unchanged:
+# while N feasibility is unchanged:
 #   c1^2 + c2^2 < 1
 
 AssertParsFeasible_WithX <- function(a1, a2, c1, c2, ax_1, ax_2, tol = 1e-12) {
@@ -19,7 +19,7 @@ AssertParsFeasible_WithX <- function(a1, a2, c1, c2, ax_1, ax_2, tol = 1e-12) {
 }
 
 AddDerivedCols_WithX <- function(grid, tol = 1e-12) {
-  # corr(A, Atilde) is still a1*c1 + a2*c2 (X omitted from Atilde)
+  # corr(A, N) is still a1*c1 + a2*c2 (X omitted from N)
   grid$rho_U     <- with(grid, a1 * c1)
   grid$rho_V     <- with(grid, a2 * c2)
   grid$rho_total <- with(grid, rho_U + rho_V)
@@ -66,9 +66,9 @@ FinalizeGrid_WithX <- function(grid,
   grid
 }
 
-# ---- basic (no V) ----
+# ---- Design 0 (no V) ----
 
-MakeGrid_NoV_WithX <- function(a1, c1, b1, b2,
+MakeGrid_D0_WithX <- function(a1, c1, b1, b2,
                                ax_1, ax_2, bx_1, bx_2, p_x2 = 0.5,
                                a0 = 0, b0 = 0, c0 = 0,
                                sigma_eY = 1,
@@ -84,7 +84,7 @@ MakeGrid_NoV_WithX <- function(a1, c1, b1, b2,
 }
 
 # ---- Design 1 ----
-# Fix U->A and U->Atilde; vary V->A and V->Atilde via a2=c2 to hit rho_target.
+# Fix U->A and U->N; vary V->A and V->N via a2=c2 to hit rho_target.
 MakeGrid_D1_FixU_VaryV_WithX <- function(rho_target_vec,
                                          a1, c1,
                                          b0 = 0, b1 = 0, b2,
