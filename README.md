@@ -1,11 +1,11 @@
-# When can negative control exposures be used for bias detection?
+# When Valid Negative Control Exposures Fail to Detect Bias
 
 This repository contains the code for the simulations in the paper: "When Valid Negative Control Exposures Fail to Detect Bias"
 
 ## Repository structure
 
 This repository contains the R code used for the simulation studies and figures in  
-**"When can negative control exposures be used for bias detection?"**
+**"When Valid Negative Control Exposures Fail to Detect Bias"**
 
 The intended entry point for using the code is the `scripts/` folder. These scripts run the main simulation scenarios by calling reusable functions stored in `R/`, saving outputs to `results/`, and producing figures from `figures/`.
 
