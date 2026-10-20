@@ -1,6 +1,6 @@
 # MakeFigure_D2_WithX.R
 # Two-panel figure for Design D2 (vary f in [0,1]):
-#   (A) mean NCE coefficient +/- mean model-based SE
+#   (A) mean NCE coefficient +/- empirical Monte Carlo SD
 #   (B) power for H0: beta_N = 0
 # Shown for Model 2 (Y~A+N) and Model 4 (Y~A+N+V)
 
@@ -37,7 +37,7 @@ d2 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N + X1 + X2",
   beta  = agg$beta_N_fit2,
-  se    = agg$se_N_fit2,
+  sd    = agg$sd_beta_N_fit2,
   power = agg$power_N_fit2
 )
 
@@ -45,14 +45,14 @@ d4 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N + V + X1 + X2",
   beta  = agg$beta_N_fit4,
-  se    = agg$se_N_fit4,
+  sd    = agg$sd_beta_N_fit4,
   power = agg$power_N_fit4
 )
 
 dat <- rbind(d2, d4)
 dat$model <- factor(dat$model, levels = c("Y ~ A + N + X1 + X2", "Y ~ A + N + V + X1 + X2"))
-dat$lo <- dat$beta - dat$se
-dat$hi <- dat$beta + dat$se
+dat$lo <- dat$beta - dat$sd
+dat$hi <- dat$beta + dat$sd
 
 # ---- theme ----
 BaseTheme <- function(legend_pos = "none") {
@@ -71,14 +71,14 @@ GetLegendGrob <- function(p) {
   g$grobs[[idx[1]]]
 }
 
-# ---- panel (A): mean coef +/- mean SE (not a CI band) ----
+# ---- panel (A): mean coef +/- empirical SD (not a CI band) ----
 p_coef <- ggplot(dat, aes(x = f, y = beta, color = model, shape = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model), alpha = 0.18, color = NA, show.legend = FALSE) +
   geom_line(linewidth = 0.9) +
   geom_point(size = 1.6) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
   labs(
-    title = "(A) Mean NCE coefficient \u00B1 SE",
+    title = "(A) Mean NCE coefficient \u00B1 SD",
     x = expression(pi[V]),
     # x = expression(paste("Share of Corr(A, ", N, ") from V (", pi[V],")")), 
     y = expression(paste("NCE coefficient")),# (", hat(beta)[N], ")")),
