@@ -1,6 +1,6 @@
 # When valid negative control exposures fail to detect bias
 
-This repository contains the code for the simulations in the paper: "When valid negative control exposures fail to detect bias"
+This repository contains the code for the simulations in the paper: "When negative control exposures fail to detect bias"
 
 ## Repository structure
 
