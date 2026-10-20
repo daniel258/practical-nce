@@ -37,7 +37,7 @@ d2 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N",
   beta  = agg$beta_N_fit2,
-  se    = agg$se_N_fit2,
+  sd    = agg$sd_beta_N_fit2,
   power = agg$power_N_fit2
 )
 
@@ -45,14 +45,14 @@ d4 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N + V",
   beta  = agg$beta_N_fit4,
-  se    = agg$se_N_fit4,
+  sd    = agg$sd_beta_N_fit4,
   power = agg$power_N_fit4
 )
 
 dat <- rbind(d2, d4)
 dat$model <- factor(dat$model, levels = c("Y ~ A + N", "Y ~ A + N + V"))
-dat$lo <- dat$beta - dat$se
-dat$hi <- dat$beta + dat$se
+dat$lo <- dat$beta - dat$sd
+dat$hi <- dat$beta + dat$sd
 
 # ---- theme ----
 BaseTheme <- function(legend_pos = "none") {
@@ -71,7 +71,7 @@ GetLegendGrob <- function(p) {
   g$grobs[[idx[1]]]
 }
 
-# ---- panel (A): mean coef +/- mean SD (not a CI band) ----
+# ---- panel (A): mean coef +/- empirical SD (not a CI band) ----
 p_coef <- ggplot(dat, aes(x = f, y = beta, color = model, shape = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model), alpha = 0.18, color = NA, show.legend = FALSE) +
   geom_line(linewidth = 0.9) +

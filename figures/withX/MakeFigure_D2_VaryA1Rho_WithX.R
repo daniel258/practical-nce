@@ -1,6 +1,6 @@
 # MakeFigure_D2_VaryA1Rho_WithX.R
 # Creates two figures (separate files):
-#   1) Mean NCE coefficient +/- mean SE
+#   1) Mean NCE coefficient +/- empirical SD
 #   2) Power
 # Facets: rows = a1, cols = rho_total
 # Handles infeasible f by inserting NA rows so lines/ribbons break.
@@ -60,7 +60,7 @@ d2 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N + X1 + X2",
   beta  = agg$beta_N_fit2,
-  se    = agg$se_N_fit2,
+  sd    = agg$sd_beta_N_fit2,
   power = agg$power_N_fit2
 )
 
@@ -70,7 +70,7 @@ d4 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N + V + X1 + X2",
   beta  = agg$beta_N_fit4,
-  se    = agg$se_N_fit4,
+  sd    = agg$sd_beta_N_fit4,
   power = agg$power_N_fit4
 )
 
@@ -88,8 +88,8 @@ support <- expand.grid(
 
 dat2 <- merge(support, dat, by = c("rho", "a1", "f", "model"), all.x = TRUE, sort = FALSE)
 dat2$model <- factor(dat2$model, levels = levels(dat$model))
-dat2$lo <- dat2$beta - dat2$se
-dat2$hi <- dat2$beta + dat2$se
+dat2$lo <- dat2$beta - dat2$sd
+dat2$hi <- dat2$beta + dat2$sd
 
 # Order for clean plotting
 dat2 <- dat2[order(dat2$a1, dat2$rho, dat2$model, dat2$f), ]
@@ -105,7 +105,7 @@ BaseTheme <- function() {
 
 XlabExpr <-  expression(pi[V])  
 
-# -------- NCE coef +/- SE --------
+# -------- NCE coef +/- empirical SD --------
 p_nce <- ggplot(dat2, aes(x = f, y = beta, color = model, shape = model, group = model)) +
   geom_ribbon(aes(ymin = lo, ymax = hi, fill = model, group = model),
               alpha = 0.18, color = NA, show.legend = FALSE) +

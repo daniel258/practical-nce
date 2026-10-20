@@ -112,7 +112,7 @@ d2 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N",
   beta  = agg$beta_N_fit2,
-  se    = agg$se_N_fit2,
+  sd    = agg$sd_beta_N_fit2,
   power = agg$power_N_fit2
 )
 
@@ -122,7 +122,7 @@ d4 <- data.frame(
   f     = agg$f_plot,
   model = "Y ~ A + N + V",
   beta  = agg$beta_N_fit4,
-  se    = agg$se_N_fit4,
+  sd    = agg$sd_beta_N_fit4,
   power = agg$power_N_fit4
 )
 
@@ -140,8 +140,8 @@ support <- expand.grid(
 
 dat2 <- merge(support, dat, by = c("a1", "rho", "f", "model"), all.x = TRUE, sort = FALSE)
 dat2$model <- factor(dat2$model, levels = levels(dat$model))
-dat2$lo <- dat2$beta - dat2$se
-dat2$hi <- dat2$beta + dat2$se
+dat2$lo <- dat2$beta - dat2$sd
+dat2$hi <- dat2$beta + dat2$sd
 
 # Order for clean plotting
 ord <- order(dat2$a1, dat2$rho, dat2$model, dat2$f)
